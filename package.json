@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "android": "npx react-native run-android",
-    "ios": "npx react-native run-ios",
+    "ios": "npx react-native run-ios --verbose",
+    "pods": "cd ios && pod install --repo-update",
     "start": "npx react-native start",
     "test": "jest",
     "lint": "eslint ."
