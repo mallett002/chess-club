@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "android": "npx react-native run-android",
+    "clean:ios": "cd ios && xcodebuild clean && cd ..",
     "ios": "npx react-native run-ios --verbose",
-    "pods": "cd ios && pod install --repo-update",
+    "pods": "cd ios && pod install --repo-update && cd ..",
     "start": "npx react-native start",
     "test": "jest",
     "lint": "eslint ."
@@ -33,6 +34,10 @@
     "react-test-renderer": "17.0.1"
   },
   "jest": {
-    "preset": "react-native"
+    "verbose": true,
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-native|react-native-iphone-x-helper|@react-native|react-native-vector-icons)/)"
+    ]
   }
 }
