@@ -15,29 +15,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-
-    - name: Cache npm dependencies
-      uses: actions/cache@v2
-      with:
-        path: '~/.npm'
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - run: npm ci
-
+    - run: yarn
     - run: xcode-select -p
-
-    - name: Cache pods
-      uses: actions/cache@v1
-      with:
-        path: ios/Pods
-        key: ${{ runner.OS }}-pods-cache-${{ hashFiles('**/ios/Podfile.lock') }}
-        restore-keys: |
-          ${{ runner.OS }}-pods-cache-
     - run: pod install
       working-directory: ios
       name: Install pod dependencies
-
     - name: Build iOS (debug)
       run: "xcodebuild \
         -workspace ios/ChessClub.xcworkspace \
@@ -48,11 +30,3 @@ jobs:
         -UseModernBuildSystem=NO \
         -archivePath $PWD/ChessClub \
         CODE_SIGNING_ALLOWED=NO"
-
-    - name: Compress .xcarchive
-      run: zip -r -9 ChessClub.xcarchive.zip $PWD/ChessClub.xcarchive/
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: ios-xarchive
-        path: ChessClub.xcarchive.zip
