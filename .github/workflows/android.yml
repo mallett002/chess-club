@@ -14,9 +14,6 @@ jobs:
     - name: Use Node.js v12
       uses: actions/setup-node@v1
       with:
-        name: android-apk
-        path: '**/*.apk'
-      with:
         node-version: 12.x
     - run: yarn
     - run: ./gradlew assembleDebug -Dorg.gradle.logging.level=info
