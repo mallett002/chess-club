@@ -1,4 +1,4 @@
-name: iOS
+name: Android
 
 on:  
   push:
@@ -8,18 +8,18 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js
+    - name: Use Node.js v12
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
     - run: yarn
-    - run: xcode-select -p
-    - run: yarn pods
+    - run: pod install
       working-directory: ios
       name: Install pod dependencies
+
     - name: Build iOS (debug)
       run: "xcodebuild \
         -workspace ios/ChessClub.xcworkspace \
@@ -30,3 +30,11 @@ jobs:
         -UseModernBuildSystem=NO \
         -archivePath $PWD/ChessClub \
         CODE_SIGNING_ALLOWED=NO"
+
+    - name: Compress .xcarchive
+      run: zip -r -9 ChessClub.xcarchive.zip $PWD/ChessClub.xcarchive/
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ios-xarchive
+        path: ChessClub.xcarchive.zip
