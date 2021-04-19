@@ -4,7 +4,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './pages/home/home-screen';
-import GamesScreen from './pages/games/games-screen';
+// import GamesScreen from './pages/games/games-screen';
+import GamesScreen from './pages/games/game';
 import ProfileScreen from './pages/profile/profile-screen';
 import ChatsScreen from './pages/chats/chats-screen';
 import {tabScreenOptions} from './components/nav/helpers';
