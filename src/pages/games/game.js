@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Dimensions} from 'react-native';
 import uuid from 'react-native-uuid';
 
 // For now:
@@ -66,6 +66,12 @@ const getBoard = () => [
   ]
 ];
 
+const calculateCellWidth = () => {
+  const width = Dimensions.get('window').width;
+
+  return (width  - 18) / 8;
+}
+
 const styles = StyleSheet.create({
   rowStyles: {
     flexDirection: "row",
@@ -73,14 +79,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cell:{
-    margin: 2,
-    height: 20,
-    width: 20,
+    margin: 1,
+    height: calculateCellWidth(),
+    width: calculateCellWidth(),
   }
 });
 
 const generateCellStyle = (n) => ({
-  backgroundColor: n % 2 === 0 ? 'gray' : 'white'
+  backgroundColor: n % 2 === 0 ? '#9a783a' : '#d3bb99'
 });
 
 const Game = () => {
@@ -90,7 +96,7 @@ const Game = () => {
     {row.map((cell, index) => <View
       key={uuid.v4()}
       style={[styles.cell, generateCellStyle(index + i - 1)]}>
-        <Text>{cell ? cell.type : 'empty'}</Text>
+        <Text>{cell ? cell.type : '  '}</Text>
     </View>)}
   </View>);
 };
