@@ -69,19 +69,18 @@ const getBoard = () => [
 const calculateCellWidth = () => {
   const width = Dimensions.get('window').width;
 
-  return (width  - 18) / 8;
+  return (width) / 8;
 }
 
 const styles = StyleSheet.create({
   rowStyles: {
     flexDirection: "row",
     backgroundColor: "white",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   cell:{
-    margin: 1,
     height: calculateCellWidth(),
-    width: calculateCellWidth(),
+    width: calculateCellWidth()
   }
 });
 
