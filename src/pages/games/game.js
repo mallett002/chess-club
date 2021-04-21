@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, StyleSheet, Dimensions} from 'react-native';
 import uuid from 'react-native-uuid';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // For now:
 const getBoard = () => [
@@ -77,10 +78,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "white",
     justifyContent: "center"
-  },
-  cell:{
-    height: calculateCellWidth(),
-    width: calculateCellWidth()
   }
 });
 
@@ -90,14 +87,25 @@ const generateCellStyle = (n) => ({
 
 const Game = () => {
   const board = getBoard();
+  const cellWidth = calculateCellWidth();
 
-  return board.map((row, i) => <View key={i} style={styles.rowStyles}>
-    {row.map((cell, index) => <View
-      key={uuid.v4()}
-      style={[styles.cell, generateCellStyle(index + i - 1)]}>
-        <Text>{cell ? cell.type : '  '}</Text>
-    </View>)}
-  </View>);
+  return (
+    <>
+      {
+        board.map((row, i) => <View key={i} style={styles.rowStyles}>
+        {row.map((cell, index) => <View
+          key={uuid.v4()}
+          style={[
+            generateCellStyle(index + i - 1),
+            {
+              height: cellWidth,
+              width: cellWidth
+            }
+          ]}>
+            {cell && <Icon name={'chess-queen'} size={cellWidth} color="black" />}
+        </View>)}
+        </View>)}
+    </>);
 };
 
 export default Game;
