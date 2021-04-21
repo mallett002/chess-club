@@ -67,6 +67,13 @@ const getBoard = () => [
   ]
 ];
 
+const colors = {
+  DARK_CELL: '#735114',
+  LIGHT_CELL: '#ad9471',
+  BLACK_PIECE: '#211806',
+  WHITE_PIECE: '#fff8eb'
+};
+
 const calculateCellWidth = () => {
   const width = Dimensions.get('window').width;
 
@@ -82,7 +89,7 @@ const styles = StyleSheet.create({
 });
 
 const generateCellStyle = (n) => ({
-  backgroundColor: n % 2 === 0 ? '#9a783a' : '#d3bb99'
+  backgroundColor: n % 2 === 0 ?  colors.DARK_CELL : colors.LIGHT_CELL
 });
 
 const Game = () => {
@@ -102,7 +109,11 @@ const Game = () => {
               width: cellWidth
             }
           ]}>
-            {cell && <Icon name={'chess-queen'} size={cellWidth} color="black" />}
+            {cell && <Icon 
+              color={cell.color === 'b' ? colors.BLACK_PIECE : colors.WHITE_PIECE}
+              name={'chess-queen'}
+              size={cellWidth}
+            />}
         </View>)}
         </View>)}
     </>);
