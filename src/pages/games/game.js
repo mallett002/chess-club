@@ -1,6 +1,9 @@
 import React from 'react';
-import {Text, View, StyleSheet, Dimensions} from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import uuid from 'react-native-uuid';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {PIECES} from '../../constants/board-helpers';
+import {colors} from '../../constants/colors';
 
 // For now:
 const getBoard = () => [
@@ -77,27 +80,38 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "white",
     justifyContent: "center"
-  },
-  cell:{
-    height: calculateCellWidth(),
-    width: calculateCellWidth()
   }
 });
 
 const generateCellStyle = (n) => ({
-  backgroundColor: n % 2 === 0 ? '#9a783a' : '#d3bb99'
+  backgroundColor: n % 2 === 0 ?  colors.DARK_CELL : colors.LIGHT_CELL
 });
 
 const Game = () => {
   const board = getBoard();
+  const cellWidth = calculateCellWidth();
 
-  return board.map((row, i) => <View key={i} style={styles.rowStyles}>
-    {row.map((cell, index) => <View
-      key={uuid.v4()}
-      style={[styles.cell, generateCellStyle(index + i - 1)]}>
-        <Text>{cell ? cell.type : '  '}</Text>
-    </View>)}
-  </View>);
+  return (
+    <>
+      {
+        board.map((row, i) => <View key={i} style={styles.rowStyles}>
+        {row.map((cell, index) => <View
+          key={uuid.v4()}
+          style={[
+            generateCellStyle(index + i - 1),
+            {
+              height: cellWidth,
+              width: cellWidth
+            }
+          ]}>
+            {cell && <Icon 
+              color={cell.color === 'b' ? colors.BLACK_PIECE : colors.WHITE_PIECE}
+              name={PIECES[cell.type]}
+              size={cellWidth}
+            />}
+        </View>)}
+        </View>)}
+    </>);
 };
 
 export default Game;
