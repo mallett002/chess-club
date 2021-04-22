@@ -2,6 +2,7 @@ import React from 'react';
 import {Text, View, StyleSheet, Dimensions} from 'react-native';
 import uuid from 'react-native-uuid';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { PIECES } from './helpers/board-helpers';
 
 // For now:
 const getBoard = () => [
@@ -111,7 +112,7 @@ const Game = () => {
           ]}>
             {cell && <Icon 
               color={cell.color === 'b' ? colors.BLACK_PIECE : colors.WHITE_PIECE}
-              name={'chess-queen'}
+              name={PIECES[cell.type]}
               size={cellWidth}
             />}
         </View>)}
