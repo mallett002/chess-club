@@ -1,8 +1,9 @@
 import React from 'react';
-import {Text, View, StyleSheet, Dimensions} from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import uuid from 'react-native-uuid';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { PIECES } from './helpers/board-helpers';
+import {PIECES} from '../../constants/board-helpers';
+import {colors} from '../../constants/colors';
 
 // For now:
 const getBoard = () => [
@@ -67,13 +68,6 @@ const getBoard = () => [
     { type: 'r', color: 'w' }
   ]
 ];
-
-const colors = {
-  DARK_CELL: '#735114',
-  LIGHT_CELL: '#ad9471',
-  BLACK_PIECE: '#211806',
-  WHITE_PIECE: '#fff8eb'
-};
 
 const calculateCellWidth = () => {
   const width = Dimensions.get('window').width;
