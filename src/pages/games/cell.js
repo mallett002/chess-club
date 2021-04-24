@@ -1,36 +1,46 @@
-import React from 'react';
-import {View, Dimensions} from 'react-native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {PIECES} from '../../constants/board-helpers';
-import {colors} from '../../constants/colors';
+import { PIECES } from '../../constants/board-helpers';
+import { colors } from '../../constants/colors';
 
-const calculateCellWidth = () => {
-  const width = Dimensions.get('window').width;
 
-  return (width) / 8;
+const generateCellStyle = (rowIndex, cellIndex, isSelected, cellWidth) => {
+  const n = cellIndex + rowIndex - 1;
+
+  const styles = {
+    backgroundColor: n % 2 === 0 ? colors.DARK_CELL : colors.LIGHT_CELL,
+    height: cellWidth,
+    width: cellWidth
+  };
+
+  if (isSelected) {
+    return {
+      ...styles,
+      borderWidth: 1,
+      borderColor: 'green'
+    };
+  }
+
+  return styles;
 };
 
-const generateCellStyle = (n) => ({
-  backgroundColor: n % 2 === 0 ? colors.DARK_CELL : colors.LIGHT_CELL
-});
-
-const Cell = ({cell, cellIndex, rowIndex }) => {
-  const cellWidth = calculateCellWidth();
+const Cell = ({ cellWidth, cell, cellIndex, rowIndex }) => {
+  const [isSelected, setIsSelected] = useState(false);
 
   return (
-    <View
-      style={[
-        generateCellStyle(cellIndex + rowIndex - 1),
-        {
-          height: cellWidth,
-          width: cellWidth
-        }
-      ]}>
-      {cell && <Icon
-        color={cell.color === 'b' ? colors.BLACK_PIECE : colors.WHITE_PIECE}
-        name={PIECES[cell.type]}
-        size={cellWidth}
-      />}
+    <View>
+      <TouchableOpacity
+        onPress={() => setIsSelected(!isSelected)}
+        style={[
+          generateCellStyle(rowIndex, cellIndex, isSelected, cellWidth),
+        ]}>
+        {cell && <Icon
+          color={cell.color === 'b' ? colors.BLACK_PIECE : colors.WHITE_PIECE}
+          name={PIECES[cell.type]}
+          size={cellWidth}
+        />}
+      </TouchableOpacity>
     </View>
   );
 };

@@ -78,6 +78,23 @@ const getBoard = () => [
   ]
 ];
 
+// maps columns and rows for board
+const getBoardNotations = () => {
+  const columns = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  
+  return columns.reduce((accum, curr, i) => {
+    if (!accum[i]) {
+      accum[i] = [];
+    }
+
+    for (let j = 0; j < 8; j++) {
+      accum[i].push(`${curr}${j+1}`);
+    }
+
+    return accum;
+  }, []);
+};
+
 const styles = StyleSheet.create({
   rowStyles: {
     flexDirection: "row",
@@ -86,14 +103,22 @@ const styles = StyleSheet.create({
   }
 });
 
+const calculateCellWidth = () => {
+  const width = Dimensions.get('window').width;
+
+  return (width) / 8;
+};
+
 const Board = () => {
   const positions = getBoard();
+  const cellWidth = calculateCellWidth();
 
   return (
     <>
       {
         positions.map((row, rowIndex) => <View key={rowIndex} style={styles.rowStyles}>
           {row.map((cell, cellIndex) => <Cell
+            cellWidth={cellWidth}
             cell={cell}
             cellIndex={cellIndex}
             key={uuid.v4()}
