@@ -79,6 +79,12 @@ const getBoard = () => [
 ];
 
 // maps columns and rows for board
+// TODO: Look at generating this where we loop to make the board
+/*
+- Could have an indexToRankMap & indexToFileMap
+- rank: rows (numbers)
+- file: columns (letters)
+*/
 const getBoardNotations = () => {
   const columns = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
   
