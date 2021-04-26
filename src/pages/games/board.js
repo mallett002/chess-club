@@ -95,6 +95,7 @@ const calculateCellWidth = () => {
 
 const Board = () => {
   const positions = getBoard();
+  // Todo: try adding the file/rank mappings here in place "mapPositionsToFileRank(board)"
   const cellWidth = calculateCellWidth();
   const [selectedCell, select] = useState(null);
 

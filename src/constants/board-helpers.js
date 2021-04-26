@@ -28,3 +28,4 @@ export const indexToRank = {
   6: 'g',
   7: 'h',
  };
+ 
