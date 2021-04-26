@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import uuid from 'react-native-uuid';
 
 import Cell from './cell';
+import {indexToFile, indexToRank} from '../../constants/board-helpers';
 
 // For now:
 const getBoard = () => [
@@ -78,29 +79,6 @@ const getBoard = () => [
   ]
 ];
 
-// maps columns and rows for board
-// TODO: Look at generating this where we loop to make the board
-/*
-- Could have an indexToRankMap & indexToFileMap
-- rank: rows (numbers)
-- file: columns (letters)
-*/
-const getBoardNotations = () => {
-  const columns = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-  
-  return columns.reduce((accum, curr, i) => {
-    if (!accum[i]) {
-      accum[i] = [];
-    }
-
-    for (let j = 0; j < 8; j++) {
-      accum[i].push(`${curr}${j+1}`);
-    }
-
-    return accum;
-  }, []);
-};
-
 const styles = StyleSheet.create({
   rowStyles: {
     flexDirection: "row",
@@ -118,17 +96,35 @@ const calculateCellWidth = () => {
 const Board = () => {
   const positions = getBoard();
   const cellWidth = calculateCellWidth();
+  const [selectedCell, select] = useState(null);
+
+  const onCellSelect = (file, rank) => {
+    const newLabel = `${file}${rank}`;
+
+    if (newLabel === selectedCell) {
+      select(null);
+    } else {
+      select(newLabel);
+    }
+  };
 
   return (
     <>
       {
-        positions.map((row, rowIndex) => <View key={rowIndex} style={styles.rowStyles}>
+        positions.map((row, rowIndex) => <View
+          key={rowIndex}
+          style={styles.rowStyles}
+        >
           {row.map((cell, cellIndex) => <Cell
             cellWidth={cellWidth}
             cell={cell}
             cellIndex={cellIndex}
             key={uuid.v4()}
             rowIndex={rowIndex}
+            rank={indexToRank[rowIndex]}
+            file={indexToFile[cellIndex]}
+            onCellSelect={onCellSelect}
+            selectedCell={selectedCell}
           />)}
         </View>)}
     </>);
