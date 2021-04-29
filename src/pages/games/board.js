@@ -79,6 +79,18 @@ const getBoard = () => [
   ]
 ];
 
+const mapPositionsToFileRank = (positions) => {
+  const pieceByFileAndRank = {};
+
+  for (let rowIndex=0; rowIndex<positions.length; rowIndex++) {
+    for (let cellIndex=0; cellIndex<positions.length; cellIndex++) {
+      pieceByFileAndRank[`${indexToFile[cellIndex]}${indexToRank[rowIndex]}`] = positions[rowIndex][cellIndex];
+    }
+  }
+
+  return pieceByFileAndRank;
+};
+
 const styles = StyleSheet.create({
   rowStyles: {
     flexDirection: "row",
@@ -99,9 +111,7 @@ const Board = () => {
   const cellWidth = calculateCellWidth();
   const [selectedCell, select] = useState(null);
 
-  const onCellSelect = (file, rank) => {
-    const newLabel = `${file}${rank}`;
-
+  const onCellSelect = (newLabel) => {
     if (newLabel === selectedCell) {
       select(null);
     } else {
@@ -122,8 +132,6 @@ const Board = () => {
             cellIndex={cellIndex}
             key={uuid.v4()}
             rowIndex={rowIndex}
-            rank={indexToRank[rowIndex]}
-            file={indexToFile[cellIndex]}
             onCellSelect={onCellSelect}
             selectedCell={selectedCell}
           />)}

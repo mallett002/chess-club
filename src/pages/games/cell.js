@@ -5,9 +5,8 @@ import { PIECES } from '../../constants/board-helpers';
 import { colors } from '../../constants/colors';
 
 
-const generateCellStyle = (rowIndex, cellIndex, selectedCell, cellWidth, file, rank) => {
+const generateCellStyle = (rowIndex, cellIndex, selectedCell, cellWidth, cellLabel) => {
   const n = cellIndex + rowIndex - 1;
-  const cellLabel = `${file}${rank}`
 
   const styles = {
     backgroundColor: n % 2 === 0 ? colors.DARK_CELL : colors.LIGHT_CELL,
@@ -26,14 +25,12 @@ const generateCellStyle = (rowIndex, cellIndex, selectedCell, cellWidth, file, r
   return styles;
 };
 
-const Cell = ({ cellWidth, cell, cellIndex, rowIndex, rank, file, onCellSelect, selectedCell }) => {
+const Cell = ({ cellWidth, cell, cellIndex, rowIndex, onCellSelect, selectedCell }) => {
   return (
     <View>
       <TouchableOpacity
-        onPress={() => onCellSelect(file, rank)}
-        style={[
-          generateCellStyle(rowIndex, cellIndex, selectedCell, cellWidth, file, rank),
-        ]}>
+        onPress={() => onCellSelect(cell.label)}
+        style={generateCellStyle(rowIndex, cellIndex, selectedCell, cellWidth, cell.label)}>
         {cell && <Icon
           color={cell.color === 'b' ? colors.BLACK_PIECE : colors.WHITE_PIECE}
           name={PIECES[cell.type]}
