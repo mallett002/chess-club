@@ -1,12 +1,11 @@
-import React, {useState} from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import uuid from 'react-native-uuid';
+import React, { useState } from 'react';
+import { View, FlatList, Dimensions } from 'react-native';
 
 import Cell from './cell';
-import {indexToFile, indexToRank} from '../../constants/board-helpers';
+import { indexToFile, indexToRank } from '../../constants/board-helpers';
 
 // For now:
-const getBoard = () => [
+const board = [
   [
     { type: 'r', color: 'b' },
     null,
@@ -82,33 +81,23 @@ const getBoard = () => [
 const mapPositionsToFileRank = (positions) => {
   const pieceByFileAndRank = {};
 
-  for (let rowIndex=0; rowIndex<positions.length; rowIndex++) {
-    for (let cellIndex=0; cellIndex<positions.length; cellIndex++) {
-      pieceByFileAndRank[`${indexToFile[cellIndex]}${indexToRank[rowIndex]}`] = positions[rowIndex][cellIndex];
+  for (let rowIndex = 0; rowIndex < positions.length; rowIndex++) {
+    for (let cellIndex = 0; cellIndex < positions.length; cellIndex++) {
+      const label = `${indexToFile[cellIndex]}${indexToRank[rowIndex]}`;
+      pieceByFileAndRank[label] = {
+        ...positions[rowIndex][cellIndex],
+        label
+      };
     }
   }
 
-  return pieceByFileAndRank;
+  return Object.values(pieceByFileAndRank);
 };
 
-const styles = StyleSheet.create({
-  rowStyles: {
-    flexDirection: "row",
-    backgroundColor: "white",
-    justifyContent: "center"
-  }
-});
-
-const calculateCellWidth = () => {
-  const width = Dimensions.get('window').width;
-
-  return (width) / 8;
-};
+const cellWidth = (Dimensions.get('window').width) / 8;
 
 const Board = () => {
-  const positions = getBoard();
-  // Todo: try adding the file/rank mappings here in place "mapPositionsToFileRank(board)"
-  const cellWidth = calculateCellWidth();
+  const positions = mapPositionsToFileRank(board);
   const [selectedCell, select] = useState(null);
 
   const onCellSelect = (newLabel) => {
@@ -119,24 +108,34 @@ const Board = () => {
     }
   };
 
+  const renderItem = ({ item, index }) => {
+    const styles = selectedCell === item.label ? {
+      borderWidth: 1,
+      borderColor: 'green'
+    } : {};
+
+    return (
+      <Cell
+        index={index}
+        cell={item}
+        cellWidth={cellWidth}
+        selectedStyles={styles}
+        onPress={() => onCellSelect(item.label)}
+      />
+    );
+  };
+
   return (
-    <>
-      {
-        positions.map((row, rowIndex) => <View
-          key={rowIndex}
-          style={styles.rowStyles}
-        >
-          {row.map((cell, cellIndex) => <Cell
-            cellWidth={cellWidth}
-            cell={cell}
-            cellIndex={cellIndex}
-            key={uuid.v4()}
-            rowIndex={rowIndex}
-            onCellSelect={onCellSelect}
-            selectedCell={selectedCell}
-          />)}
-        </View>)}
-    </>);
+    <View>
+      <FlatList
+        numColumns={8}
+        data={positions}
+        renderItem={renderItem}
+        keyExtractor={cell => cell.label}
+        extraData={selectedCell}
+      />
+    </View>
+  );
 };
 
 export default Board;

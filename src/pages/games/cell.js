@@ -5,33 +5,27 @@ import { PIECES } from '../../constants/board-helpers';
 import { colors } from '../../constants/colors';
 
 
-const generateCellStyle = (rowIndex, cellIndex, selectedCell, cellWidth, cellLabel) => {
-  const n = cellIndex + rowIndex - 1;
+const generateCellStyle = (cellIndex, cellWidth, selectedStyles) => {
+  // TODO: figure out styles here
+  // const n = cellIndex + rowIndex - 1;
 
   const styles = {
-    backgroundColor: n % 2 === 0 ? colors.DARK_CELL : colors.LIGHT_CELL,
+    backgroundColor: cellIndex % 2 !== 0 ? colors.DARK_CELL : colors.LIGHT_CELL,
     height: cellWidth,
-    width: cellWidth
+    width: cellWidth,
+    ...selectedStyles
   };
-
-  if (selectedCell === cellLabel) {
-    return {
-      ...styles,
-      borderWidth: 1,
-      borderColor: 'green'
-    };
-  }
 
   return styles;
 };
 
-const Cell = ({ cellWidth, cell, cellIndex, rowIndex, onCellSelect, selectedCell }) => {
+const Cell = ({ cellWidth, cell, index, selectedStyles, onPress }) => {
   return (
     <View>
       <TouchableOpacity
-        onPress={() => onCellSelect(cell.label)}
-        style={generateCellStyle(rowIndex, cellIndex, selectedCell, cellWidth, cell.label)}>
-        {cell && <Icon
+        onPress={() => onPress(cell.label)}
+        style={generateCellStyle(index, cellWidth, selectedStyles)}>
+        {cell && cell.type && <Icon
           color={cell.color === 'b' ? colors.BLACK_PIECE : colors.WHITE_PIECE}
           name={PIECES[cell.type]}
           size={cellWidth}
