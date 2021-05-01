@@ -8,28 +8,24 @@ const getFile = (str) => str.match(/\w/)[0];
 const getRank = (str) => str.match(/(\d)/)[0];
 
 const getBackgroundColor = (label, isSelected) => {
+  if (isSelected) {
+    return colors.SELECTED_CELL;
+  }
+
   const file = getFile(label);
   const rank = parseInt(getRank(label), 10);
   const fileIndex = parseInt(fileToIndex[file], 10);
   const isDark = (rank + fileIndex - 1) % 2 === 0;
 
   if (isDark) {
-    if (isSelected) {
-      // return something a little lighter than dark_cell
-      return '#b58222';
-    }
-
     return colors.DARK_CELL;
-  }
-
-  if (isSelected) {
-    // return something a little lighter than light_cell
-    return '#e3cbaa';
   }
 
   return colors.LIGHT_CELL
 };
 
+
+// todo: look at using StyleSheet from react native here
 const generateCellStyle = (label, cellWidth, selectedStyles, isSelected) => {
   const styles = {
     backgroundColor: getBackgroundColor(label, isSelected),

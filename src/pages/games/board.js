@@ -157,7 +157,7 @@ const Board = () => {
   };
 
   return (
-    <View style={{marginTop: 20}}>
+    <View style={{marginTop: 40}}>
       <FlatList
         numColumns={8}
         data={positions}
