@@ -108,7 +108,7 @@ const Board = () => {
     }
   };
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item }) => {
     const styles = selectedCell === item.label ? {
       borderWidth: 1,
       borderColor: 'green'
@@ -116,7 +116,6 @@ const Board = () => {
 
     return (
       <Cell
-        index={index}
         cell={item}
         cellWidth={cellWidth}
         selectedStyles={styles}

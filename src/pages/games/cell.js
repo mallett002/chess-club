@@ -8,8 +8,8 @@ const getFile = (str) => str.match(/\w/)[0];
 const getRank = (str) => str.match(/(\d)/)[0];
 
 const isDark = (label) => {
-  const file = getFile(label); // cellIndex (letters)
-  const rank = parseInt(getRank(label), 10); // rowIndex
+  const file = getFile(label);
+  const rank = parseInt(getRank(label), 10);
   const fileIndex = parseInt(fileToIndex[file], 10);
 
   return (rank + fileIndex - 1) % 2 === 0;
@@ -26,7 +26,7 @@ const generateCellStyle = (label, cellWidth, selectedStyles) => {
   return styles;
 };
 
-const Cell = ({ cellWidth, cell, index, selectedStyles, onPress }) => {
+const Cell = ({ cellWidth, cell, selectedStyles, onPress }) => {
   return (
     <View>
       <TouchableOpacity
