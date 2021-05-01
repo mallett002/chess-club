@@ -5,7 +5,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './pages/home/home-screen';
 // import GamesScreen from './pages/games/games-screen';
-import GamesScreen from './pages/games/game';
+import Board from './pages/games/board';
 import ProfileScreen from './pages/profile/profile-screen';
 import ChatsScreen from './pages/chats/chats-screen';
 import {tabScreenOptions} from './components/nav/helpers';
@@ -45,7 +45,7 @@ export default function App() {
         }}
       >
         <Tab.Screen name='Home' component={HomeScreen} />
-        <Tab.Screen name='Games' component={GamesScreen} />
+        <Tab.Screen name='Games' component={Board} />
         <Tab.Screen name='Profile' component={ProfileScreen} />
         <Tab.Screen name='Chats' component={ChatsScreen} />
       </Tab.Navigator>
