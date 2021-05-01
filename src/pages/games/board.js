@@ -78,6 +78,26 @@ const board = [
   ]
 ];
 
+// selecting g8:
+const moves = [
+  {
+    color: 'b',
+    from: 'g8',
+    to: 'h6',
+    flags: 'n',
+    piece: 'n',
+    san: 'Nh6'
+  },
+  {
+    color: 'b',
+    from: 'g8',
+    to: 'f6',
+    flags: 'n',
+    piece: 'n',
+    san: 'Nf6'
+  }
+]
+
 const mapPositionsToFileRank = (positions) => {
   const pieceByFileAndRank = {};
 
@@ -109,12 +129,25 @@ const Board = () => {
   };
 
   const renderItem = ({ item }) => {
-    const styles = selectedCell === item.label ? {
-      backgroundColor: '#41a36d'
-    } : {};
+    const styles = {};
+    let isSelected = false;
+
+    if (selectedCell === item.label) {
+      isSelected = true;
+    }
+
+    // hard coded to g8 for now
+    if (selectedCell === 'g8') {
+      moves.forEach((move) => {
+        if (move.to === item.label) {
+          styles.backgroundColor = '#41a36d';
+        }
+      });
+    }
 
     return (
       <Cell
+        isSelected={isSelected}
         cell={item}
         cellWidth={cellWidth}
         selectedStyles={styles}
@@ -124,7 +157,7 @@ const Board = () => {
   };
 
   return (
-    <View>
+    <View style={{marginTop: 20}}>
       <FlatList
         numColumns={8}
         data={positions}
