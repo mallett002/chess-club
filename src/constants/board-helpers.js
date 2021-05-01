@@ -1,3 +1,13 @@
+const inverseObject = (obj) => {
+  const newObj = {};
+
+  Object.keys(obj).forEach((key) => {
+    newObj[obj[key]] = key;
+  });
+
+  return newObj;
+};
+
 export const PIECES = {
   r: 'chess-rook',
   n: 'chess-knight',
@@ -28,4 +38,5 @@ export const indexToRank = {
   6: 'g',
   7: 'h',
  };
- 
+
+ export const fileToIndex = inverseObject(indexToFile);
