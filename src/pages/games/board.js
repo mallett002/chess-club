@@ -110,8 +110,7 @@ const Board = () => {
 
   const renderItem = ({ item }) => {
     const styles = selectedCell === item.label ? {
-      borderWidth: 1,
-      borderColor: 'green'
+      backgroundColor: '#41a36d'
     } : {};
 
     return (
