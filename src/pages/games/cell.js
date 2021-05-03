@@ -24,25 +24,23 @@ const getBackgroundColor = (label, isSelected) => {
   return colors.LIGHT_CELL
 };
 
-
-// todo: look at using StyleSheet from react native here
-const generateCellStyle = (label, cellWidth, selectedStyles, isSelected) => {
+const generateCellStyle = (label, cellWidth, destinationStyles, isSelected) => {
   const styles = {
     backgroundColor: getBackgroundColor(label, isSelected),
     height: cellWidth,
     width: cellWidth,
-    ...selectedStyles
+    ...destinationStyles
   };
 
   return styles;
 };
 
-const Cell = ({ isSelected: pieceIsSelected, cellWidth, cell, selectedStyles, onPress }) => {
+const Cell = ({ isSelected, cellWidth, cell, destinationStyles, onPress }) => {
   return (
     <View>
       <TouchableOpacity
         onPress={() => onPress(cell.label)}
-        style={generateCellStyle(cell.label, cellWidth, selectedStyles, pieceIsSelected)}>
+        style={generateCellStyle(cell.label, cellWidth, destinationStyles, isSelected)}>
         {cell && cell.type && <Icon
           color={cell.color === 'b' ? colors.BLACK_PIECE : colors.WHITE_PIECE}
           name={PIECES[cell.type]}

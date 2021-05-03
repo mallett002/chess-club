@@ -3,6 +3,7 @@ import { View, FlatList, Dimensions } from 'react-native';
 
 import Cell from './cell';
 import { indexToFile, indexToRank } from '../../constants/board-helpers';
+import { colors } from '../../constants/colors';
 
 // For now:
 const board = [
@@ -140,7 +141,7 @@ const Board = () => {
     if (selectedCell === 'g8') {
       moves.forEach((move) => {
         if (move.to === item.label) {
-          styles.backgroundColor = '#41a36d';
+          styles.backgroundColor = colors.DESTINATION_CELL;
         }
       });
     }
@@ -150,14 +151,14 @@ const Board = () => {
         isSelected={isSelected}
         cell={item}
         cellWidth={cellWidth}
-        selectedStyles={styles}
+        destinationStyles={styles}
         onPress={() => onCellSelect(item.label)}
       />
     );
   };
 
   return (
-    <View style={{marginTop: 40}}>
+    <View style={{ marginTop: 40 }}>
       <FlatList
         numColumns={8}
         data={positions}
