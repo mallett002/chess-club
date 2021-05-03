@@ -99,26 +99,26 @@ const moves = [
   }
 ]
 
-const mapPositionsToFileRank = (positions) => {
-  const pieceByFileAndRank = {};
+const getFlattenedPositions = (positions) => {
+  const flattenedPositions = [];
 
   for (let rowIndex = 0; rowIndex < positions.length; rowIndex++) {
     for (let cellIndex = 0; cellIndex < positions.length; cellIndex++) {
       const label = `${indexToFile[cellIndex]}${indexToRank[rowIndex]}`;
-      pieceByFileAndRank[label] = {
+      flattenedPositions.push({
         ...positions[rowIndex][cellIndex],
         label
-      };
+      });
     }
   }
 
-  return Object.values(pieceByFileAndRank);
+  return flattenedPositions;
 };
 
 const cellWidth = (Dimensions.get('window').width) / 8;
 
 const Board = () => {
-  const positions = mapPositionsToFileRank(board);
+  const positions = getFlattenedPositions(board);
   const [selectedCell, select] = useState(null);
 
   const onCellSelect = (newLabel) => {
