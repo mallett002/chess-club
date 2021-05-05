@@ -3,6 +3,7 @@ import { View, FlatList, Dimensions } from 'react-native';
 
 import Cell from './cell';
 import { indexToFile, indexToRank } from '../../constants/board-helpers';
+import { colors } from '../../constants/colors';
 
 // For now:
 const board = [
@@ -78,26 +79,46 @@ const board = [
   ]
 ];
 
-const mapPositionsToFileRank = (positions) => {
-  const pieceByFileAndRank = {};
+// selecting g8:
+const moves = [
+  {
+    color: 'b',
+    from: 'g8',
+    to: 'h6',
+    flags: 'n',
+    piece: 'n',
+    san: 'Nh6'
+  },
+  {
+    color: 'b',
+    from: 'g8',
+    to: 'f6',
+    flags: 'n',
+    piece: 'n',
+    san: 'Nf6'
+  }
+]
+
+const getFlattenedPositions = (positions) => {
+  const flattenedPositions = [];
 
   for (let rowIndex = 0; rowIndex < positions.length; rowIndex++) {
     for (let cellIndex = 0; cellIndex < positions.length; cellIndex++) {
       const label = `${indexToFile[cellIndex]}${indexToRank[rowIndex]}`;
-      pieceByFileAndRank[label] = {
+      flattenedPositions.push({
         ...positions[rowIndex][cellIndex],
         label
-      };
+      });
     }
   }
 
-  return Object.values(pieceByFileAndRank);
+  return flattenedPositions;
 };
 
 const cellWidth = (Dimensions.get('window').width) / 8;
 
 const Board = () => {
-  const positions = mapPositionsToFileRank(board);
+  const positions = getFlattenedPositions(board);
   const [selectedCell, select] = useState(null);
 
   const onCellSelect = (newLabel) => {
@@ -109,23 +130,35 @@ const Board = () => {
   };
 
   const renderItem = ({ item }) => {
-    const styles = selectedCell === item.label ? {
-      borderWidth: 1,
-      borderColor: 'green'
-    } : {};
+    const styles = {};
+    let isSelected = false;
+
+    if (selectedCell === item.label) {
+      isSelected = true;
+    }
+
+    // hard coded to g8 for now
+    if (selectedCell === 'g8') {
+      moves.forEach((move) => {
+        if (move.to === item.label) {
+          styles.backgroundColor = colors.DESTINATION_CELL;
+        }
+      });
+    }
 
     return (
       <Cell
+        isSelected={isSelected}
         cell={item}
         cellWidth={cellWidth}
-        selectedStyles={styles}
+        destinationStyles={styles}
         onPress={() => onCellSelect(item.label)}
       />
     );
   };
 
   return (
-    <View>
+    <View style={{ marginTop: 40 }}>
       <FlatList
         numColumns={8}
         data={positions}
