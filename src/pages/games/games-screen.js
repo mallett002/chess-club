@@ -25,9 +25,7 @@ const CREATE_GAME_MUTATION = gql`
   }`;
 
 export default function GamesScreen() {
-  const [ createGameMutation, {data} ] = useMutation(CREATE_GAME_MUTATION);
-
-  console.log({dataIs: data});
+  const [ createGameMutation, {data, error} ] = useMutation(CREATE_GAME_MUTATION);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
