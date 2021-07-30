@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
-import React from 'react';
-import { Text, View, Button } from 'react-native';
+import React, {useEffect} from 'react';
+import { Text, View, Button, StyleSheet } from 'react-native';
 
 import CurrentGames from './current-games';
 
@@ -36,21 +36,42 @@ const CURRENT_GAMES_QUERY = gql`
   }
 `;
 
+const styles = StyleSheet.create({
+  page: {},
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold'
+  }
+});
+
 export default function GamesScreen() {
   const [createGameMutation, { data: createGameData, error: createGameError }] = useMutation(CREATE_GAME_MUTATION);
-  const {
-    data: currentGamesData,
-    error: currentGamesError,
-    loading: currentGamesLoading
-  } = useQuery(CURRENT_GAMES_QUERY, {
-    variables: {
-      playerId: 'some-guid-1'
+  // const {
+  //   data: currentGamesData,
+  //   error: currentGamesError,
+  //   loading: currentGamesLoading,
+  //   refetch
+  // } = useQuery(CURRENT_GAMES_QUERY, {
+  //   variables: {
+  //     playerId: 'some-guid-1'
+  //   }
+  // });
+
+  const currentGamesData = [
+    {
+      gameId: 'random-game-id',
+      opponent: 'ffedgy'
     }
-  });
+  ];
+  const currentGamesLoading = false;
+
+  // useEffect(() => {
+  //   refetch({variables: { playerId: 'some-guid-1' }})
+  // }, [createGameData]);
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Games</Text>
+    <View>
+      <Text style={styles.title}>Games</Text>
       <CurrentGames games={currentGamesData} loading={currentGamesLoading} />
       <Text>Invitations</Text>
       <Button

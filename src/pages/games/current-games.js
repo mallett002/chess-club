@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Button } from 'react-native';
+import { Text, View, FlatList } from 'react-native';
 
 const CurrentGames = ({ games, loading }) => {
   if (loading) {
@@ -18,7 +18,12 @@ const CurrentGames = ({ games, loading }) => {
         <FlatList
           data={games}
           renderItem={({ item }) => {
-            return <Text>{item.gameId}</Text>
+            return (
+              <>
+                <Text>{item.gameId}</Text>
+                <Text>{item.opponent}</Text>
+              </>
+            )
           }}
           keyExtractor={game => game.gameId}
         /> :
