@@ -6,14 +6,13 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 // import { persistCache } from 'apollo3-cache-persist'
 
 import HomeScreen from './pages/home/home-screen';
-import GamesScreen from './pages/games/games-screen';
-import Board from './pages/games/board';
+import GamesStack from './pages/games/games-stack';
 import ProfileScreen from './pages/profile/profile-screen';
 import ChatsScreen from './pages/chats/chats-screen';
 import { tabScreenOptions } from './components/nav/helpers';
 
 // For local development:
-ngrokUri = 'http://1f0f88ab3fad.ngrok.io/graphql';
+ngrokUri = 'http://5f82f460e769.ngrok.io/graphql';
 
 const client = new ApolloClient({
   uri: ngrokUri,
@@ -55,7 +54,7 @@ const App = () => (
         }}
       >
         <Tab.Screen name='Home' component={HomeScreen} />
-        <Tab.Screen name='Games' component={GamesScreen} />
+        <Tab.Screen name='Games' component={GamesStack} />
         <Tab.Screen name='Profile' component={ProfileScreen} />
         <Tab.Screen name='Chats' component={ChatsScreen} />
       </Tab.Navigator>
