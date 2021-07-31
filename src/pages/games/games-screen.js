@@ -8,20 +8,8 @@ const CREATE_GAME_MUTATION = gql`
   mutation createGame($playerOne: ID!, $playerTwo: ID!) {
     createGame(playerOne: $playerOne, playerTwo: $playerTwo) {
       gameId
-      moves {
-        color
-        from
-        to
-        flags
-        piece
-        san
-      }
-      players
-      positions {
-        type
-        color
-        label
-      }
+      playerOne
+      playerTwo
       turn
     }
   }`;
@@ -30,8 +18,9 @@ const CURRENT_GAMES_QUERY = gql`
   query GetGames($playerId: ID!){
     getGames(playerId: $playerId) {
       gameId
-  	  players
-  	  state
+      playerOne
+      playerTwo
+      turn
 	  }
   }
 `;
@@ -45,34 +34,30 @@ const styles = StyleSheet.create({
 });
 
 export default function GamesScreen() {
-  const [createGameMutation, { data: createGameData, error: createGameError }] = useMutation(CREATE_GAME_MUTATION);
-  // const {
-  //   data: currentGamesData,
-  //   error: currentGamesError,
-  //   loading: currentGamesLoading,
-  //   refetch
-  // } = useQuery(CURRENT_GAMES_QUERY, {
-  //   variables: {
-  //     playerId: 'some-guid-1'
-  //   }
-  // });
-
-  const currentGamesData = [
-    {
-      gameId: 'random-game-id',
-      opponent: 'ffedgy'
+  const [ createGameMutation, { data: createGameData, error: createGameError } ] = useMutation(CREATE_GAME_MUTATION);
+  const {
+    data: currentGamesData,
+    error: currentGamesError,
+    loading: currentGamesLoading,
+    refetch: refetchCurrentGames
+  } = useQuery(CURRENT_GAMES_QUERY, {
+    variables: {
+      playerId: 'some-guid-1'
     }
-  ];
-  const currentGamesLoading = false;
+  });
 
-  // useEffect(() => {
-  //   refetch({variables: { playerId: 'some-guid-1' }})
-  // }, [createGameData]);
+  useEffect(() => {
+    refetchCurrentGames({variables: { playerId: 'some-guid-1' }});
+  }, [createGameData]);
 
   return (
     <View>
       <Text style={styles.title}>Games</Text>
-      <CurrentGames games={currentGamesData} loading={currentGamesLoading} />
+      <CurrentGames 
+        games={currentGamesData}
+        loading={currentGamesLoading} 
+        error={currentGamesError}
+      />
       <Text>Invitations</Text>
       <Button
         onPress={async () => {
