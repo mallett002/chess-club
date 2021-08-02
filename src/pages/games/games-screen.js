@@ -42,14 +42,21 @@ export default function GamesScreen() {
     refetchCurrentGames({variables: { playerId: 'some-guid-1' }});
   }, [createGameData]);
 
+console.log({
+    currentGamesData,
+    currentGamesError,
+    currentGamesLoading,
+    refetchCurrentGames
+});
+
   return (
     <View>
+      <Text>Invitations</Text>
       <CurrentGames 
         games={currentGamesData}
         loading={currentGamesLoading} 
         error={currentGamesError}
       />
-      <Text>Invitations</Text>
       <Button
         onPress={async () => {
           await createGameMutation({

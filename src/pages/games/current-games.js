@@ -12,13 +12,18 @@ const CurrentGames = ({ games, loading, error }) => {
   if (error) {
     return (
       <View><Text>{'There was an error loading games.'}</Text></View>
-    )
+    );
+  }
+
+  if (loading) {
+    return (
+      <Text>{'Loading current games...'}</Text>
+    );
   }
 
   return (
     <View>
       <Text>{'Current Games'}</Text>
-      {loading && <Text>{'Loading current games...'}</Text>}
       {games && games.getGames && games.getGames.length ?
         <FlatList
           data={games.getGames}
