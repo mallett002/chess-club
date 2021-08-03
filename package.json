@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "clean-deps": "rm -rf yarn.lock package-lock.json node_modules",
+    "clean-android": "rm -rf android/app/build",
+    "clean-ios": "rm ios/Pods ios/Podfile.lock && rm -rf ~/Library/Developer/Xcode/DerivedData",
+    "clean-project": "npm run clean-deps && npm run clean-android && npm run clean-ios",
     "android": "npx react-native run-android",
     "clean:ios": "cd ios && xcodebuild clean && cd ..",
     "ios": "npx react-native run-ios --verbose",
