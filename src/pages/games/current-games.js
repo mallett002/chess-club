@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, FlatList, StyleSheet } from 'react-native';
+import { Text, View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 
 const styles = StyleSheet.create({
   gameItem: {
@@ -8,7 +8,12 @@ const styles = StyleSheet.create({
   }
 });
 
-const CurrentGames = ({ games, loading, error }) => {
+const CurrentGames = ({ navigation, games, loading, error }) => {
+  const navigateToGame = (gameId) => {
+    // TODO: pass gameId to board
+    navigation.navigate('Board');
+  };
+
   if (error) {
     return (
       <View><Text>{'There was an error loading games.'}</Text></View>
@@ -29,11 +34,14 @@ const CurrentGames = ({ games, loading, error }) => {
           data={games.getGames}
           renderItem={({ item }) => {
             return (
-              <View style={styles.gameItem}>
+              <TouchableOpacity
+                style={styles.gameItem}
+                onPress={() => navigateToGame(item.gameId)}
+              >
                 <Text>{item.gameId}</Text>
                 <Text>{item.opponent}</Text>
                 <Text>{item.turn}</Text>
-              </View>
+              </TouchableOpacity>
             )
           }}
           keyExtractor={game => game.gameId}

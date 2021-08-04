@@ -11,11 +11,8 @@ import ProfileScreen from './pages/profile/profile-screen';
 import ChatsScreen from './pages/chats/chats-screen';
 import { tabScreenOptions } from './components/nav/helpers';
 
-// For local development:
-ngrokUri = 'http://5f82f460e769.ngrok.io/graphql';
-
 const client = new ApolloClient({
-  uri: ngrokUri,
+  uri: 'http://[machine-id]:4000/graphql',
   cache: new InMemoryCache()
 });
 

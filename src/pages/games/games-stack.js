@@ -9,7 +9,7 @@ const Stack = createStackNavigator();
 const GamesStack = () => (
   <Stack.Navigator>
     <Stack.Screen name='Games' component={GamesScreen} />
-    <Stack.Screen name="board" component={Board} />
+    <Stack.Screen name="Board" component={Board} />
   </Stack.Navigator>
 );
 

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, FlatList, Dimensions } from 'react-native';
+import { View, Text, FlatList, Dimensions } from 'react-native';
+import { gql, useMutation, useQuery } from '@apollo/client';
 
-import Cell from './cell';
 import { indexToFile, indexToRank } from '../../constants/board-helpers';
 import { colors } from '../../constants/colors';
+
+import Cell from './cell';
 
 // For now:
 const board = [
@@ -99,26 +101,47 @@ const moves = [
   }
 ]
 
-const getFlattenedPositions = (positions) => {
-  const flattenedPositions = [];
-
-  for (let rowIndex = 0; rowIndex < positions.length; rowIndex++) {
-    for (let cellIndex = 0; cellIndex < positions.length; cellIndex++) {
-      const label = `${indexToFile[cellIndex]}${indexToRank[rowIndex]}`;
-      flattenedPositions.push({
-        ...positions[rowIndex][cellIndex],
-        label
-      });
-    }
-  }
-
-  return flattenedPositions;
-};
-
 const cellWidth = (Dimensions.get('window').width) / 8;
 
+const GET_BOARD_QUERY = gql`
+  query GetBoard($gameId: ID!){
+    getBoard(gameId: $gameId) {
+      gameId
+      moves
+      playerOne
+      playerTwo
+      positions
+      turn
+	  }
+  }
+`;
+
 const Board = () => {
-  const positions = getFlattenedPositions(board);
+  // const positions = getFlattenedPositions(board);
+  const {
+    data,
+    error,
+    loading,
+  } = useQuery(GET_BOARD_QUERY, {
+    variables: {
+      playerId: 'some-guid-1'
+    }
+  });
+
+  if (error) {
+    return (
+      <View><Text>{'There was an error loading the board.'}</Text></View>
+    );
+  }
+
+  if (loading) {
+    return (
+      <View><Text>{'Loading game...'}</Text></View>
+    )
+  }
+
+  // TODO: subscribe to board updates
+
   const [selectedCell, select] = useState(null);
 
   const onCellSelect = (newLabel) => {
@@ -157,17 +180,22 @@ const Board = () => {
     );
   };
 
-  return (
-    <View style={{ marginTop: 40 }}>
-      <FlatList
-        numColumns={8}
-        data={positions}
-        renderItem={renderItem}
-        keyExtractor={cell => cell.label}
-        extraData={selectedCell}
-      />
-    </View>
-  );
+
+  if (data & data.getBoard) {
+    return (
+      <View style={{ marginTop: 40 }}>
+        <FlatList
+          numColumns={8}
+          data={positions}
+          renderItem={renderItem}
+          keyExtractor={cell => cell.label}
+          extraData={selectedCell}
+        />
+      </View>
+    );  
+  }
+
+  return null;
 };
 
 export default Board;

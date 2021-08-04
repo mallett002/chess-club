@@ -25,7 +25,7 @@ const CURRENT_GAMES_QUERY = gql`
   }
 `;
 
-export default function GamesScreen() {
+export default function GamesScreen({navigation}) {
   const [ createGameMutation, { data: createGameData, error: createGameError } ] = useMutation(CREATE_GAME_MUTATION);
   const {
     data: currentGamesData,
@@ -42,17 +42,11 @@ export default function GamesScreen() {
     refetchCurrentGames({variables: { playerId: 'some-guid-1' }});
   }, [createGameData]);
 
-console.log({
-    currentGamesData,
-    currentGamesError,
-    currentGamesLoading,
-    refetchCurrentGames
-});
-
   return (
     <View>
       <Text>Invitations</Text>
-      <CurrentGames 
+      <CurrentGames
+        navigation={navigation}
         games={currentGamesData}
         loading={currentGamesLoading} 
         error={currentGamesError}
