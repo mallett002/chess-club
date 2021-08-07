@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Dimensions } from 'react-native';
 import { gql, useQuery } from '@apollo/client';
 
@@ -60,59 +60,57 @@ const Board = ({ route }) => {
   }
 
   useEffect(() => {
-    if (data.getBoard.moves) {
-      setMoves(data.getBoard.moves);
-    }
-  }, []);
+    const moves = data.getBoard.moves || null;
 
-  // TODO: subscribe to board updates
+    setMoves(moves);
+  }, [data.getBoard.moves]);
 
-  const onCellSelect = (newLabel) => {
-    // if (newLabel === selectedCell) {
-    //   select(null);
-    // } else {
-    //   select(newLabel);
-    // }
-  };
+// TODO: subscribe to board updates
 
-  const renderItem = ({ item }) => {
-    const styles = {};
-    let isSelected = false;
+const onCellSelect = (newLabel) => {
+  const label = newLabel === selectedCell ? null : newLabel;
 
-    if (selectedCell === item.label) {
-      isSelected = true;
-    }
+  select(label);
+};
 
-    // hard coded to g8 for now
-    // if (selectedCell === 'g8') {
-    //   moves.forEach((move) => {
-    //     if (move.to === item.label) {
-    //       styles.backgroundColor = colors.DESTINATION_CELL;
-    //     }
-    //   });
-    // }
+const renderItem = ({ item }) => {
+  const styles = {};
+  let isSelected = false;
 
-    return (
-      <Cell
-        isSelected={isSelected}
-        cell={item}
-        cellWidth={cellWidth}
-      // destinationStyles={styles}
-        onPress={() => onCellSelect(item.label)}
-      />
-    );
-  };
+  if (selectedCell === item.label) {
+    isSelected = true;
+  }
+
+  // hard coded to g8 for now
+  // if (selectedCell === 'g8') {
+  //   moves.forEach((move) => {
+  //     if (move.to === item.label) {
+  //       styles.backgroundColor = colors.DESTINATION_CELL;
+  //     }
+  //   });
+  // }
+
   return (
-    <View style={{ marginTop: 40 }}>
-      <FlatList
-        numColumns={8}
-        data={data.getBoard.positions}
-        renderItem={renderItem}
-        keyExtractor={cell => cell.label}
-        extraData={selectedCell}
-      />
-    </View>
+    <Cell
+      isSelected={isSelected}
+      cell={item}
+      cellWidth={cellWidth}
+      // destinationStyles={styles}
+      onPress={onCellSelect}
+    />
   );
+};
+return (
+  <View style={{ marginTop: 40 }}>
+    <FlatList
+      numColumns={8}
+      data={data.getBoard.positions}
+      renderItem={renderItem}
+      keyExtractor={cell => cell.label}
+      extraData={selectedCell}
+    />
+  </View>
+);
 };
 
 export default Board;
