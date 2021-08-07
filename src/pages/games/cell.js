@@ -24,23 +24,23 @@ const getBackgroundColor = (label, isSelected) => {
   return colors.LIGHT_CELL
 };
 
-const generateCellStyle = (label, cellWidth, destinationStyles, isSelected) => {
+const generateCellStyle = (label, cellWidth, isSelected) => {
   const styles = {
     backgroundColor: getBackgroundColor(label, isSelected),
     height: cellWidth,
-    width: cellWidth,
-    ...destinationStyles
+    width: cellWidth
+    // ...destinationStyles
   };
 
   return styles;
 };
 
-const Cell = ({ isSelected, cellWidth, cell, destinationStyles, onPress }) => {
+const Cell = ({ isSelected, cellWidth, cell, onPress}) => {
   return (
     <View>
       <TouchableOpacity
         onPress={() => onPress(cell.label)}
-        style={generateCellStyle(cell.label, cellWidth, destinationStyles, isSelected)}>
+        style={generateCellStyle(cell.label, cellWidth, isSelected)}>
         {cell && cell.type && <Icon
           color={cell.color === 'b' ? colors.BLACK_PIECE : colors.WHITE_PIECE}
           name={PIECES[cell.type]}
