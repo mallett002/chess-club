@@ -10,8 +10,7 @@ const styles = StyleSheet.create({
 
 const CurrentGames = ({ navigation, games, loading, error }) => {
   const navigateToGame = (gameId) => {
-    // TODO: pass gameId to board
-    navigation.navigate('Board');
+    navigation.navigate('Board', {gameId});
   };
 
   if (error) {
