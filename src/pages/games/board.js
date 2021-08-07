@@ -47,6 +47,16 @@ const Board = ({ route }) => {
     }
   });
 
+  useEffect(() => {
+    let moves = null;
+
+    if (data) {
+      moves = data.getBoard.moves;
+    }
+
+    setMoves(moves);
+  }, [data]);
+
   if (error) {
     return (
       <View><Text>{'There was an error loading the board.'}</Text></View>
@@ -58,12 +68,6 @@ const Board = ({ route }) => {
       <View><Text>{'Loading game...'}</Text></View>
     )
   }
-
-  useEffect(() => {
-    const moves = data.getBoard.moves || null;
-
-    setMoves(moves);
-  }, [data.getBoard.moves]);
 
 // TODO: subscribe to board updates
 
