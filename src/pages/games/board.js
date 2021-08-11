@@ -48,13 +48,23 @@ const Board = ({ route }) => {
   });
 
   useEffect(() => {
-    let moves = null;
+    let movesByLabel = null;
 
-    if (data) {
-      moves = data.getBoard.moves;
+    if (data && data.getBoard.moves) {
+      const movesList = data.getBoard.moves;
+
+      movesByLabel = data.getBoard.moves.reduce((accum, curr) => {
+        if (!accum[curr.from]) {
+          accum[curr.from] = [];
+        }
+    
+        accum[curr.from].push(curr);
+    
+        return accum;
+      }, {});
     }
 
-    setMoves(moves);
+    setMoves(movesByLabel);
   }, [data]);
 
   if (error) {
@@ -69,52 +79,56 @@ const Board = ({ route }) => {
     )
   }
 
-// TODO: subscribe to board updates
+  // TODO: subscribe to board updates
 
-const onCellSelect = (newLabel) => {
-  const label = newLabel === selectedCell ? null : newLabel;
+  const onCellSelect = (newLabel) => {
+    const label = newLabel === selectedCell ? null : newLabel;
 
-  select(label);
-};
+    select(label);
+  };
 
-const renderItem = ({ item }) => {
-  const styles = {};
-  let isSelected = false;
+  const renderItem = ({ item }) => {
+    const styles = {};
+    let isSelected = false;
 
-  if (selectedCell === item.label) {
-    isSelected = true;
-  }
+    if (selectedCell === item.label) {
+      isSelected = true;
+    }
 
-  // hard coded to g8 for now
-  // if (selectedCell === 'g8') {
-  //   moves.forEach((move) => {
-  //     if (move.to === item.label) {
-  //       styles.backgroundColor = colors.DESTINATION_CELL;
-  //     }
-  //   });
-  // }
+    if (selectedCell && moves[selectedCell]) {
+      moves[selectedCell].forEach((move) => {
+        if (move.to === item.label) {
+          styles.backgroundColor = colors.DESTINATION_CELL;
+          // styles.border = 1;
+          // styles.borderColor = '#fff';
+        }
+      });
+    }
+
+    console.log({styles});
+
+    return (
+      <Cell
+        isSelected={isSelected}
+        cell={item}
+        cellWidth={cellWidth}
+        destinationStyles={styles}
+        onPress={onCellSelect}
+      />
+    );
+  };
 
   return (
-    <Cell
-      isSelected={isSelected}
-      cell={item}
-      cellWidth={cellWidth}
-      // destinationStyles={styles}
-      onPress={onCellSelect}
-    />
+    <View style={{ marginTop: 40 }}>
+      <FlatList
+        numColumns={8}
+        data={data.getBoard.positions}
+        renderItem={renderItem}
+        keyExtractor={cell => cell.label}
+        extraData={selectedCell}
+      />
+    </View>
   );
-};
-return (
-  <View style={{ marginTop: 40 }}>
-    <FlatList
-      numColumns={8}
-      data={data.getBoard.positions}
-      renderItem={renderItem}
-      keyExtractor={cell => cell.label}
-      extraData={selectedCell}
-    />
-  </View>
-);
 };
 
 export default Board;
