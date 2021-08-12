@@ -35,6 +35,7 @@ const GET_BOARD_QUERY = gql`
 
 const Board = ({ route }) => {
   const [moves, setMoves] = useState(null);
+  const [validMoves, setValidMoves] = useState(null);
   const [selectedCell, select] = useState(null);
   const { gameId } = route.params;
   const {
@@ -48,23 +49,22 @@ const Board = ({ route }) => {
   });
 
   useEffect(() => {
-    let movesByLabel = null;
+    let movesList = null;
+    const validMovesLookup = {};
 
     if (data && data.getBoard.moves) {
-      const movesList = data.getBoard.moves;
-
-      movesByLabel = data.getBoard.moves.reduce((accum, curr) => {
-        if (!accum[curr.from]) {
-          accum[curr.from] = [];
+      movesList = data.getBoard.moves;
+      for (move of data.getBoard.moves) {
+        if (!validMovesLookup[move.from]) {
+          validMovesLookup[move.from] = new Set();
         }
-    
-        accum[curr.from].push(curr);
-    
-        return accum;
-      }, {});
+
+        validMovesLookup[move.from].add(move.to);
+      }
     }
 
-    setMoves(movesByLabel);
+    setMoves(movesList);
+    setValidMoves(validMovesLookup);
   }, [data]);
 
   if (error) {
@@ -95,17 +95,11 @@ const Board = ({ route }) => {
       isSelected = true;
     }
 
-    if (selectedCell && moves[selectedCell]) {
-      moves[selectedCell].forEach((move) => {
-        if (move.to === item.label) {
-          styles.backgroundColor = colors.DESTINATION_CELL;
-          // styles.border = 1;
-          // styles.borderColor = '#fff';
-        }
-      });
+    if (selectedCell && validMoves[selectedCell]) {
+      if (validMoves[selectedCell].has(item.label)) {
+        styles.backgroundColor = colors.DESTINATION_CELL;
+      }
     }
-
-    console.log({styles});
 
     return (
       <Cell
