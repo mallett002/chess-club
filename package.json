@@ -5,7 +5,7 @@
   "scripts": {
     "clean-deps": "rm -rf yarn.lock package-lock.json node_modules",
     "clean-android": "rm -rf android/app/build",
-    "clean-ios": "rm ios/Pods ios/Podfile.lock && rm -rf ~/Library/Developer/Xcode/DerivedData",
+    "clean-ios": "cd ios && rm -rf /Pods && rm Podfile.lock && rm -rf ~/Library/Developer/Xcode/DerivedData && cd ..",
     "clean-project": "npm run clean-deps && npm run clean-android && npm run clean-ios",
     "android": "npx react-native run-android",
     "clean:ios": "cd ios && xcodebuild clean && cd ..",
