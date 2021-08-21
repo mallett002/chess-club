@@ -199,7 +199,6 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				38256A81C6C27758D51B0A2C /* [CP] Embed Pods Frameworks */,
 				7D479B0881018670B4309D24 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -222,7 +221,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				4B56364346FC19200D10145E /* [CP] Embed Pods Frameworks */,
 				7B657A3EF9CE573CB986A16F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -303,40 +301,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
-		};
-		38256A81C6C27758D51B0A2C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChessClub-ChessClubTests/Pods-ChessClub-ChessClubTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChessClub-ChessClubTests/Pods-ChessClub-ChessClubTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChessClub-ChessClubTests/Pods-ChessClub-ChessClubTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4B56364346FC19200D10145E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChessClub/Pods-ChessClub-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChessClub/Pods-ChessClub-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChessClub/Pods-ChessClub-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		7B657A3EF9CE573CB986A16F /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
