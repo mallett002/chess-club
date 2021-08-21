@@ -81,8 +81,27 @@ const Board = ({ route }) => {
 
   // TODO: subscribe to board updates
 
-  const onCellSelect = (newLabel) => {
-    const label = newLabel === selectedCell ? null : newLabel;
+  const onCellSelect = (newCell) => {
+    /*
+    - if there is already a selected cell
+      - if newCell === selected cell
+        - select(null);
+      - if newCell !== selectedCell && newCell is valid move of selected cell: move selectedCell to newCell
+        - select(null)
+    - else select newCell
+    */
+
+    let label = null;
+
+    if (selectedCell) {
+      if (newCell !== selectedCell && validMoves[selectedCell].has(newCell)) {
+        const from = selectedCell;
+        const to = newCell;
+        // movePiece(selectedCell, newCell);
+      }
+    } else {
+      label = newCell;
+    }
 
     select(label);
   };
