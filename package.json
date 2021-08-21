@@ -41,8 +41,9 @@
   "jest": {
     "verbose": true,
     "preset": "react-native",
+    "setupFiles": ["./node_modules/react-native-gesture-handler/jestSetup.js"],
     "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|react-native-iphone-x-helper|@react-native|react-native-vector-icons)/)"
+      "node_modules/(?!(react-native|react-native-iphone-x-helper|@react-native|react-native-vector-icons|@react-navigation)/)"
     ]
   }
 }
