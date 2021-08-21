@@ -25,15 +25,7 @@ const CURRENT_GAMES_QUERY = gql`
   }
 `;
 
-const styles = StyleSheet.create({
-  page: {},
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold'
-  }
-});
-
-export default function GamesScreen() {
+export default function GamesScreen({navigation}) {
   const [ createGameMutation, { data: createGameData, error: createGameError } ] = useMutation(CREATE_GAME_MUTATION);
   const {
     data: currentGamesData,
@@ -52,13 +44,13 @@ export default function GamesScreen() {
 
   return (
     <View>
-      <Text style={styles.title}>Games</Text>
-      <CurrentGames 
+      <Text>Invitations</Text>
+      <CurrentGames
+        navigation={navigation}
         games={currentGamesData}
         loading={currentGamesLoading} 
         error={currentGamesError}
       />
-      <Text>Invitations</Text>
       <Button
         onPress={async () => {
           await createGameMutation({

@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "clean-ios": "rm -rf ~/Library/Developer/Xcode/DerivedData",
     "android": "npx react-native run-android",
-    "clean:ios": "cd ios && xcodebuild clean && cd ..",
     "ios": "npx react-native run-ios --verbose",
     "pods": "cd ios && pod install --repo-update && cd ..",
     "start": "npx react-native start",
@@ -14,8 +14,9 @@
   "dependencies": {
     "@apollo/client": "^3.3.21",
     "@react-native-community/masked-view": "^0.1.10",
-    "@react-navigation/bottom-tabs": "^5.11.9",
-    "@react-navigation/native": "^5.9.4",
+    "@react-navigation/bottom-tabs": "5.11.15",
+    "@react-navigation/native": "5.9.8",
+    "@react-navigation/stack": "^5.14.5",
     "graphql": "^15.5.1",
     "react": "17.0.1",
     "react-native": "0.64.0",
@@ -40,8 +41,9 @@
   "jest": {
     "verbose": true,
     "preset": "react-native",
+    "setupFiles": ["./node_modules/react-native-gesture-handler/jestSetup.js"],
     "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|react-native-iphone-x-helper|@react-native|react-native-vector-icons)/)"
+      "node_modules/(?!(react-native|react-native-iphone-x-helper|@react-native|react-native-vector-icons|@react-navigation)/)"
     ]
   }
 }

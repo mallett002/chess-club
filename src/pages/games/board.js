@@ -1,132 +1,90 @@
-import React, { useState } from 'react';
-import { View, FlatList, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, Dimensions } from 'react-native';
+import { gql, useQuery } from '@apollo/client';
 
-import Cell from './cell';
 import { indexToFile, indexToRank } from '../../constants/board-helpers';
 import { colors } from '../../constants/colors';
 
-// For now:
-const board = [
-  [
-    { type: 'r', color: 'b' },
-    null,
-    { type: 'b', color: 'b' },
-    { type: 'q', color: 'b' },
-    { type: 'k', color: 'b' },
-    { type: 'b', color: 'b' },
-    { type: 'n', color: 'b' },
-    { type: 'r', color: 'b' }
-  ],
-  [
-    { type: 'p', color: 'b' },
-    { type: 'p', color: 'b' },
-    { type: 'p', color: 'b' },
-    { type: 'p', color: 'b' },
-    { type: 'p', color: 'b' },
-    { type: 'p', color: 'b' },
-    { type: 'p', color: 'b' },
-    { type: 'p', color: 'b' }
-  ],
-  [
-    null,
-    null,
-    { type: 'n', color: 'b' },
-    null,
-    null,
-    null,
-    null,
-    null
-  ],
-  [
-    null, null, null,
-    null, null, null,
-    null, null
-  ],
-  [
-    { type: 'p', color: 'w' },
-    null,
-    null,
-    { type: 'p', color: 'w' },
-    null,
-    null,
-    null,
-    null
-  ],
-  [
-    null, null, null,
-    null, null, null,
-    null, null
-  ],
-  [
-    null,
-    { type: 'p', color: 'w' },
-    { type: 'p', color: 'w' },
-    null,
-    { type: 'p', color: 'w' },
-    { type: 'p', color: 'w' },
-    { type: 'p', color: 'w' },
-    { type: 'p', color: 'w' }
-  ],
-  [
-    { type: 'r', color: 'w' },
-    { type: 'n', color: 'w' },
-    { type: 'b', color: 'w' },
-    { type: 'q', color: 'w' },
-    { type: 'k', color: 'w' },
-    { type: 'b', color: 'w' },
-    { type: 'n', color: 'w' },
-    { type: 'r', color: 'w' }
-  ]
-];
-
-// selecting g8:
-const moves = [
-  {
-    color: 'b',
-    from: 'g8',
-    to: 'h6',
-    flags: 'n',
-    piece: 'n',
-    san: 'Nh6'
-  },
-  {
-    color: 'b',
-    from: 'g8',
-    to: 'f6',
-    flags: 'n',
-    piece: 'n',
-    san: 'Nf6'
-  }
-]
-
-const getFlattenedPositions = (positions) => {
-  const flattenedPositions = [];
-
-  for (let rowIndex = 0; rowIndex < positions.length; rowIndex++) {
-    for (let cellIndex = 0; cellIndex < positions.length; cellIndex++) {
-      const label = `${indexToFile[cellIndex]}${indexToRank[rowIndex]}`;
-      flattenedPositions.push({
-        ...positions[rowIndex][cellIndex],
-        label
-      });
-    }
-  }
-
-  return flattenedPositions;
-};
+import Cell from './cell';
 
 const cellWidth = (Dimensions.get('window').width) / 8;
 
-const Board = () => {
-  const positions = getFlattenedPositions(board);
+const GET_BOARD_QUERY = gql`
+  query GetBoard($gameId: ID!){
+    getBoard(gameId: $gameId) {
+      gameId
+      moves {
+        color
+        from
+        to
+        flags
+        piece
+        san
+      }
+      playerOne
+      playerTwo
+      positions {
+        type
+        color
+        label
+      }
+      turn
+    }
+  }
+`;
+
+const Board = ({ route }) => {
+  const [moves, setMoves] = useState(null);
+  const [validMoves, setValidMoves] = useState(null);
   const [selectedCell, select] = useState(null);
+  const { gameId } = route.params;
+  const {
+    data,
+    error,
+    loading,
+  } = useQuery(GET_BOARD_QUERY, {
+    variables: {
+      gameId
+    }
+  });
+
+  useEffect(() => {
+    let movesList = null;
+    const validMovesLookup = {};
+
+    if (data && data.getBoard.moves) {
+      movesList = data.getBoard.moves;
+      for (move of data.getBoard.moves) {
+        if (!validMovesLookup[move.from]) {
+          validMovesLookup[move.from] = new Set();
+        }
+
+        validMovesLookup[move.from].add(move.to);
+      }
+    }
+
+    setMoves(movesList);
+    setValidMoves(validMovesLookup);
+  }, [data]);
+
+  if (error) {
+    return (
+      <View><Text>{'There was an error loading the board.'}</Text></View>
+    );
+  }
+
+  if (loading) {
+    return (
+      <View><Text>{'Loading game...'}</Text></View>
+    )
+  }
+
+  // TODO: subscribe to board updates
 
   const onCellSelect = (newLabel) => {
-    if (newLabel === selectedCell) {
-      select(null);
-    } else {
-      select(newLabel);
-    }
+    const label = newLabel === selectedCell ? null : newLabel;
+
+    select(label);
   };
 
   const renderItem = ({ item }) => {
@@ -137,13 +95,10 @@ const Board = () => {
       isSelected = true;
     }
 
-    // hard coded to g8 for now
-    if (selectedCell === 'g8') {
-      moves.forEach((move) => {
-        if (move.to === item.label) {
-          styles.backgroundColor = colors.DESTINATION_CELL;
-        }
-      });
+    if (selectedCell && validMoves[selectedCell]) {
+      if (validMoves[selectedCell].has(item.label)) {
+        styles.backgroundColor = colors.DESTINATION_CELL;
+      }
     }
 
     return (
@@ -152,7 +107,7 @@ const Board = () => {
         cell={item}
         cellWidth={cellWidth}
         destinationStyles={styles}
-        onPress={() => onCellSelect(item.label)}
+        onPress={onCellSelect}
       />
     );
   };
@@ -161,7 +116,7 @@ const Board = () => {
     <View style={{ marginTop: 40 }}>
       <FlatList
         numColumns={8}
-        data={positions}
+        data={data.getBoard.positions}
         renderItem={renderItem}
         keyExtractor={cell => cell.label}
         extraData={selectedCell}
