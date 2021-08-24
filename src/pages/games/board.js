@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Dimensions } from 'react-native';
 import { gql, useQuery, useMutation } from '@apollo/client';
 
-import { indexToFile, indexToRank } from '../../constants/board-helpers';
 import { colors } from '../../constants/colors';
 
 import Cell from './cell';
@@ -107,23 +106,12 @@ const Board = ({ route }) => {
   // TODO: subscribe to board updates
 
   const onCellSelect = async (newCell) => {
-    /*
-    - if there is already a selected cell
-      - if newCell === selected cell
-        - select(null);
-      - if newCell !== selectedCell && newCell is valid move of selected cell: move selectedCell to newCell
-        - select(null)
-    - else select newCell
-    */
-
     let label = null;
 
     if (selectedCell) {
       if (newCell !== selectedCell && validMoves[selectedCell].has(newCell)) {
         const toCell = newCell;
         const fromCell = selectedCell;
-
-        // Probably a better way to find the moveToCell's "san", but to just get it working for now:
         const moveToCellDomain = moves.find((cellMove) => cellMove.from === fromCell && cellMove.to === toCell);
 
         await movePieceMutation({
