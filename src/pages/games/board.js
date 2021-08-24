@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Dimensions } from 'react-native';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 
-import { indexToFile, indexToRank } from '../../constants/board-helpers';
 import { colors } from '../../constants/colors';
 
 import Cell from './cell';
@@ -33,6 +32,30 @@ const GET_BOARD_QUERY = gql`
   }
 `;
 
+const MOVE_PIECE_MUTATION = gql`
+  mutation UpdateBoard($gameId: ID!, $cell: String!) {
+    updateBoard(gameId: $gameId, cell: $cell) {
+      gameId
+      playerOne
+      playerTwo
+      turn
+      moves {
+        color
+        from
+        to
+        flags
+        piece
+        san
+      }
+      positions {
+        type
+        color
+        label
+      }
+    }
+  }
+`;
+
 const Board = ({ route }) => {
   const [moves, setMoves] = useState(null);
   const [validMoves, setValidMoves] = useState(null);
@@ -47,6 +70,7 @@ const Board = ({ route }) => {
       gameId
     }
   });
+  const [ movePieceMutation, { data: movePieceData, error: movePieceError } ] = useMutation(MOVE_PIECE_MUTATION);
 
   useEffect(() => {
     let movesList = null;
@@ -81,8 +105,25 @@ const Board = ({ route }) => {
 
   // TODO: subscribe to board updates
 
-  const onCellSelect = (newLabel) => {
-    const label = newLabel === selectedCell ? null : newLabel;
+  const onCellSelect = async (newCell) => {
+    let label = null;
+
+    if (selectedCell) {
+      if (newCell !== selectedCell && validMoves[selectedCell].has(newCell)) {
+        const toCell = newCell;
+        const fromCell = selectedCell;
+        const moveToCellDomain = moves.find((cellMove) => cellMove.from === fromCell && cellMove.to === toCell);
+
+        await movePieceMutation({
+          variables: {
+            gameId,
+            cell: moveToCellDomain.san
+          }
+        });
+      }
+    } else {
+      label = newCell;
+    }
 
     select(label);
   };

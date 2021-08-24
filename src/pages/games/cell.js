@@ -39,7 +39,7 @@ const Cell = ({ isSelected, cellWidth, cell, onPress, destinationStyles}) => {
   return (
     <View>
       <TouchableOpacity
-        onPress={() => onPress(cell.label)}
+        onPress={async () => await onPress(cell.label)}
         style={generateCellStyle(cell.label, cellWidth, isSelected, destinationStyles)}>
         {cell && cell.type && <Icon
           color={cell.color === 'b' ? colors.BLACK_PIECE : colors.WHITE_PIECE}
