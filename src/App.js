@@ -14,7 +14,7 @@ import { tabScreenOptions } from './components/nav/helpers';
 import SignUpScreen from './pages/auth';
 
 const client = new ApolloClient({
-  uri: 'http://192.168.0.220:4000/graphql',
+  uri: 'http://[local_base_url]:4000/graphql',
   cache: new InMemoryCache()
 });
 
