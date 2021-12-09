@@ -11,10 +11,10 @@ import GamesStack from './pages/games/games-stack';
 import ProfileScreen from './pages/profile/profile-screen';
 import ChatsScreen from './pages/chats/chats-screen';
 import { tabScreenOptions } from './components/nav/helpers';
-import SignUpScreen from './pages/auth';
+import SignUpScreen from './pages/auth/SignUp';
 
 const client = new ApolloClient({
-  uri: 'http://[local_base_url]:4000/graphql',
+  uri: 'http://[local_base_url]/graphql',
   cache: new InMemoryCache()
 });
 
@@ -66,7 +66,6 @@ const App = () => {
               </>
             ) : (
               <>
-                {/* <Stack.Screen name="SignIn" component={SignInScreen} /> */}
                 <Stack.Screen name="SignUp" component={SignUpScreen} />
               </>
             )}
