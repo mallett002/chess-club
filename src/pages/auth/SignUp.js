@@ -4,17 +4,13 @@ import { SafeAreaView, View, Text, StyleSheet, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
- 
+
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
-    .min(5, 'Too Short!')
+    .min(2, 'Too Short!')
     .max(30, 'Too Long!')
     .required('Required'),
   password: Yup.string()
-    .min(5, 'Too Short!')
-    .max(30, 'Too Long!')
-    .required('Required'),
-  passwordValidator: Yup.string()
     .min(5, 'Too Short!')
     .max(30, 'Too Long!')
     .required('Required')
@@ -28,7 +24,13 @@ const CREATE_PLAYER_MUTATION = gql`
   }
 `;
 
-const isEqual = (one, two) => one === two;
+const hasPasswordValidationErrors = (touched, values) => {
+  if (touched.passwordValidator && values.password && values.passwordValidator) {
+    return values.passwordValidator !== values.password;
+  }
+
+  return false;
+};
 
 const SignUp = () => {
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
@@ -56,7 +58,7 @@ const SignUp = () => {
           passwordValidator: ''
         }}
         validationSchema={SignupSchema}
-        onSubmit={({username, password}) => {
+        onSubmit={({ username, password }) => {
           mutate({
             variables: {
               username,
@@ -67,33 +69,40 @@ const SignUp = () => {
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <View>
-            <Text>{'username'}</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChange('username')}
-              onBlur={handleBlur('username')}
-              value={values.username}
-            />
-            { errors.username && touched.username ? (<Text>{errors.username}</Text>) : null}
-            <Text>{'password'}</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
-              value={values.password}
-            />
-            { errors.password && touched.password ? (<Text>{errors.password}</Text>) : null}
-            <Text>{'Re-enter Password'}</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChange('passwordValidator')}
-              onBlur={handleBlur('passwordValidator')}
-              value={values.passwordValidator}
-            />
-            { errors.passwordValidator && touched.passwordValidator && touched.password && !isEqual(values.passwordValidator, values.password)
-              ? ( <Text>{errors.passwordValidator}</Text> )
-              : null
-            }
+            <View style={styles.inputContainer}>
+              <Text>{'username'}</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={handleChange('username')}
+                onBlur={handleBlur('username')}
+                value={values.username}
+              />
+              {errors.username && touched.username ? (<Text style={styles.inputError}>{errors.username}</Text>) : null}
+            </View>
+            <View style={styles.inputContainer}>
+              <Text>{'password'}</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                value={values.password}
+              />
+              {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
+            </View>
+            <View style={styles.inputContainer}>
+              <Text>{'Re-enter Password'}</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={handleChange('passwordValidator')}
+                onBlur={handleBlur('passwordValidator')}
+                value={values.passwordValidator}
+              />
+              {
+                hasPasswordValidationErrors(touched, values)
+                  ? (<Text style={styles.inputError}>{'Passwords do not match!'}</Text>)
+                  : null
+              }
+            </View>
             <TouchableOpacity
               style={styles.submitButton}
               type="submit"
@@ -130,11 +139,17 @@ const styles = StyleSheet.create({
   formContainer: {
     width: '80%'
   },
+  inputContainer: {
+    marginBottom: 20,
+    height: 80
+  },
   input: {
     borderWidth: 1,
     borderRadius: 8,
-    borderColor: '#e0e0e0',
-    marginBottom: 20
+    borderColor: '#e0e0e0'
+  },
+  inputError: {
+    color: 'red'
   },
   submitContainer: {
     alignItems: 'center',
