@@ -2,6 +2,77 @@ import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
+import * as Yup from 'yup';
+ 
+const SignupSchema = Yup.object().shape({
+  username: Yup.string()
+    .min(5, 'Too Short!')
+    .max(30, 'Too Long!')
+    .required('Required'),
+  password: Yup.string()
+    .min(5, 'Too Short!')
+    .max(30, 'Too Long!')
+    .required('Required'),
+  passwordValidator: Yup.string()
+    .min(5, 'Too Short!')
+    .max(30, 'Too Long!')
+    .required('Required')
+});
+
+const SignUp = () => {
+
+  return (
+    <SafeAreaView style={styles.signUpContainer}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{'Sign Up'}</Text>
+        <Text style={styles.subtitle}>{'Create an account an start playing!'}</Text>
+      </View>
+      <Formik style={styles.formContainer}
+        initialValues={{
+          username: '',
+          password: '',
+          passwordValidator: ''
+        }}
+        onSubmit={(values) => {
+          console.log(values)}
+        }
+      >
+        {({ handleChange, handleBlur, handleSubmit, values }) => (
+          <View>
+            <Text>{'username'}</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('username')}
+              onBlur={handleBlur('username')}
+              value={values.username}
+            />
+            <Text>{'password'}</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              value={values.password}
+            />
+            <Text>{'Re-enter Password'}</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('passwordValidator')}
+              onBlur={handleBlur('passwordValidator')}
+              value={values.passwordValidator}
+            />
+            <TouchableOpacity
+              style={styles.submitButton}
+              type="submit"
+              onPress={handleSubmit}
+            >
+              <Text style={styles.submitButtonText}>Create Account</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </Formik>
+    </SafeAreaView >
+  );
+};
 
 const styles = StyleSheet.create({
   signUpContainer: {
@@ -47,58 +118,5 @@ const styles = StyleSheet.create({
     color: '#FFFFFF'
   }
 });
-
-const SignUp = () => {
-
-  return (
-    <SafeAreaView style={styles.signUpContainer}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{'Sign Up'}</Text>
-        <Text style={styles.subtitle}>{'Create an account an start playing!'}</Text>
-      </View>
-      <Formik style={styles.formContainer}
-        initialValues={{
-          username: 'poop',
-          password: '',
-          passwordValidator: ''
-        }}
-        onSubmit={(values) => {
-          console.log('here.......');
-          console.log(values)}
-        }
-      >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <View>
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChange('username')}
-              onBlur={handleBlur('username')}
-              value={values.username}
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
-              value={values.password}
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChange('passwordValidator')}
-              onBlur={handleBlur('passwordValidator')}
-              value={values.passwordValidator}
-            />
-            <TouchableOpacity
-              style={styles.submitButton}
-              type="submit"
-              onPress={handleSubmit}
-            >
-              <Text style={styles.submitButtonText}>Create Account</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </Formik>
-    </SafeAreaView >
-  );
-};
 
 export default SignUp;
