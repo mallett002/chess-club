@@ -14,6 +14,7 @@ const CurrentGames = ({ navigation, games, loading, error }) => {
   };
 
   if (error) {
+    console.log({error});
     return (
       <View><Text>{'There was an error loading games.'}</Text></View>
     );

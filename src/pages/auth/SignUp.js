@@ -1,4 +1,5 @@
 import React from 'react';
+import { gql, useMutation } from '@apollo/client';
 import { SafeAreaView, View, Text, StyleSheet, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
@@ -19,7 +20,26 @@ const SignupSchema = Yup.object().shape({
     .required('Required')
 });
 
+const CREATE_PLAYER_MUTATION = gql`
+  mutation CreatePlayer($username: String!, $password: String!) {
+    createPlayer(username: $username, password: $password) {
+      token
+    }
+  }
+`;
+
 const SignUp = () => {
+  const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
+
+  if (loading) return (<View><Text>{'Submitting...'}</Text></View>);
+  if (error) {
+    return (<View><Text>{'an error occurred...'}</Text></View>);
+  }
+
+  if (data && data.createPlayer) {
+    // TODO: store the token somewhere, redux? context? some sort of local storage?
+    return <View><Text>{JSON.stringify(data.createPlayer)}</Text></View>
+  }
 
   return (
     <SafeAreaView style={styles.signUpContainer}>
@@ -34,9 +54,14 @@ const SignUp = () => {
           passwordValidator: ''
         }}
         validationSchema={SignupSchema}
-        onSubmit={(values) => {
-          console.log(values)}
-        }
+        onSubmit={({username, password}) => {
+          mutate({
+            variables: {
+              username,
+              password
+            }
+          });
+        }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <View>
