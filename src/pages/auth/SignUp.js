@@ -33,11 +33,12 @@ const SignUp = () => {
           password: '',
           passwordValidator: ''
         }}
+        validationSchema={SignupSchema}
         onSubmit={(values) => {
           console.log(values)}
         }
       >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <View>
             <Text>{'username'}</Text>
             <TextInput
@@ -46,6 +47,9 @@ const SignUp = () => {
               onBlur={handleBlur('username')}
               value={values.username}
             />
+            {errors.username && touched.username ? (
+             <Text>{errors.username}</Text>
+           ) : null}
             <Text>{'password'}</Text>
             <TextInput
               style={styles.input}
