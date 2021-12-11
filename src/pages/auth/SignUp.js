@@ -28,6 +28,8 @@ const CREATE_PLAYER_MUTATION = gql`
   }
 `;
 
+const isEqual = (one, two) => one === two;
+
 const SignUp = () => {
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
 
@@ -88,7 +90,10 @@ const SignUp = () => {
               onBlur={handleBlur('passwordValidator')}
               value={values.passwordValidator}
             />
-            { errors.passwordValidator && touched.passwordValidator ? (<Text>{errors.passwordValidator}</Text>) : null}
+            { errors.passwordValidator && touched.passwordValidator && touched.password && !isEqual(values.passwordValidator, values.password)
+              ? ( <Text>{errors.passwordValidator}</Text> )
+              : null
+            }
             <TouchableOpacity
               style={styles.submitButton}
               type="submit"
