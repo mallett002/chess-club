@@ -15,7 +15,7 @@ export const tabScreenOptions = ({ route }) => ({
     } else if (route.name === 'Chats') {
       iconName = 'message-square';
     } else {
-      iconName = 'question'
+      return null;
     }
 
     return <Feather name={iconName} size={size} color={color} />;

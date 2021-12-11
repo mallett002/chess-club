@@ -1,7 +1,7 @@
 import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet, TextInput, Button, Alert, Input } from 'react-native';
-import { useForm, Controller } from "react-hook-form";
+import { SafeAreaView, View, Text, StyleSheet, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Formik } from 'formik';
 
 const styles = StyleSheet.create({
   signUpContainer: {
@@ -49,15 +49,6 @@ const styles = StyleSheet.create({
 });
 
 const SignUp = () => {
-  const { control, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: {
-      username: '',
-      password: '',
-      passwordValidator: ''
-    }
-  });
-
-  const onSubmit = data => console.log('fire away! ', data);
 
   return (
     <SafeAreaView style={styles.signUpContainer}>
@@ -65,74 +56,48 @@ const SignUp = () => {
         <Text style={styles.title}>{'Sign Up'}</Text>
         <Text style={styles.subtitle}>{'Create an account an start playing!'}</Text>
       </View>
-      <View style={styles.formContainer}>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <>
-              <Text>{'Username'}</Text>
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            </>
-          )}
-          name='username'
-        />
-        {errors.username && <Text>This is required.</Text>}
-        <Controller
-          control={control}
-          rules={{
-            maxLength: 100,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <>
-              <Text>{'Password'}</Text>
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            </>
-          )}
-          name='password'
-        />
-        {errors.password && <Text>This is required.</Text>}
-        <Controller
-          control={control}
-          rules={{
-            maxLength: 100,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <>
-              <Text>{'Re-enter Password'}</Text>
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            </>
-          )}
-          name='passwordValidator'
-        />
-        {errors.passwordValidator && <Text>This is required.</Text>}
-        <View style={styles.submitContainer}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={handleSubmit(onSubmit)}
-          >
-            <Text style={styles.submitButtonText}>Create Account</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
+      <Formik style={styles.formContainer}
+        initialValues={{
+          username: 'poop',
+          password: '',
+          passwordValidator: ''
+        }}
+        onSubmit={(values) => {
+          console.log('here.......');
+          console.log(values)}
+        }
+      >
+        {({ handleChange, handleBlur, handleSubmit, values }) => (
+          <View>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('username')}
+              onBlur={handleBlur('username')}
+              value={values.username}
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              value={values.password}
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('passwordValidator')}
+              onBlur={handleBlur('passwordValidator')}
+              value={values.passwordValidator}
+            />
+            <TouchableOpacity
+              style={styles.submitButton}
+              type="submit"
+              onPress={handleSubmit}
+            >
+              <Text style={styles.submitButtonText}>Create Account</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </Formik>
+    </SafeAreaView >
   );
 };
 

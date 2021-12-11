@@ -18,9 +18,6 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
-
 const getTabBarStyles = () => {
   const styles = {
     borderTopWidth: 0,
@@ -41,35 +38,41 @@ const getTabBarStyles = () => {
   return styles;
 };
 
-const App = () => {
-  const isSignedIn = false;
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+function LoggedInTabScreens() {
+  return (
+    <Tab.Navigator
+      screenOptions={tabScreenOptions}
+      style={{ padding: 10 }}
+      tabBarOptions={{
+        activeTintColor: 'tomato',
+        inactiveTintColor: 'gray',
+        style: getTabBarStyles()
+      }}
+    >
+      <Tab.Screen name='Home' component={HomeScreen} />
+      <Tab.Screen name='Games' component={GamesStack} />
+      <Tab.Screen name='Profile' component={ProfileScreen} />
+      <Tab.Screen name='Chats' component={ChatsScreen} />
+    </Tab.Navigator>
+  );
+}
+
+function App() {
+  const isLoggedIn = false;
 
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={tabScreenOptions}
-          style={{ padding: 10 }}
-          tabBarOptions={{
-            activeTintColor: 'tomato',
-            inactiveTintColor: 'gray',
-            style: getTabBarStyles()
-          }}
-        >
-          {
-            isSignedIn ? (
-              <>
-                <Tab.Screen name='Home' component={HomeScreen} />
-                <Tab.Screen name='Games' component={GamesStack} />
-                <Tab.Screen name='Profile' component={ProfileScreen} />
-                <Tab.Screen name='Chats' component={ChatsScreen} />
-              </>
-            ) : (
-              <>
-                <Stack.Screen name="SignUp" component={SignUpScreen} />
-              </>
-            )}
-        </Tab.Navigator>
+        <Stack.Navigator>
+          {isLoggedIn ? (
+            <Stack.Screen name="Home" component={LoggedInTabScreens} />
+          ): (
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+          )}
+        </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider >
   );
