@@ -47,9 +47,7 @@ const SignUp = () => {
               onBlur={handleBlur('username')}
               value={values.username}
             />
-            {errors.username && touched.username ? (
-             <Text>{errors.username}</Text>
-           ) : null}
+            { errors.username && touched.username ? (<Text>{errors.username}</Text>) : null}
             <Text>{'password'}</Text>
             <TextInput
               style={styles.input}
@@ -57,6 +55,7 @@ const SignUp = () => {
               onBlur={handleBlur('password')}
               value={values.password}
             />
+            { errors.password && touched.password ? (<Text>{errors.password}</Text>) : null}
             <Text>{'Re-enter Password'}</Text>
             <TextInput
               style={styles.input}
@@ -64,6 +63,7 @@ const SignUp = () => {
               onBlur={handleBlur('passwordValidator')}
               value={values.passwordValidator}
             />
+            { errors.passwordValidator && touched.passwordValidator ? (<Text>{errors.passwordValidator}</Text>) : null}
             <TouchableOpacity
               style={styles.submitButton}
               type="submit"
