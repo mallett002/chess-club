@@ -5,14 +5,18 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+
+// bobbyTwoShoes229
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
-    .min(2, 'Too Short!')
-    .max(30, 'Too Long!')
+    .min(2, 'Must be at least 2 characters')
+    .max(20, 'Must be no longer than 20 characters')
+    .matches(/^[ A-Za-z0-9_@./#&+-]*$/i, 'Username contains invalid characters')
     .required('Required'),
   password: Yup.string()
-    .min(5, 'Too Short!')
-    .max(30, 'Too Long!')
+    .min(2, 'Must be at least 2 characters')
+    .max(20, 'Must be no longer than 20 characters')
+    .matches(/^[ A-Za-z0-9_@./#&+-]*$/i, 'Username contains invalid characters')
     .required('Required')
 });
 
@@ -51,7 +55,7 @@ const SignUp = () => {
         <Text style={styles.title}>{'Sign Up'}</Text>
         <Text style={styles.subtitle}>{'Create an account an start playing!'}</Text>
       </View>
-      <Formik style={styles.formContainer}
+      <Formik
         initialValues={{
           username: '',
           password: '',
@@ -68,9 +72,9 @@ const SignUp = () => {
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-          <View>
+          <View style={styles.formContainer}>
             <View style={styles.inputContainer}>
-              <Text>{'username'}</Text>
+              <Text>{'Username'}</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={handleChange('username')}
@@ -80,12 +84,13 @@ const SignUp = () => {
               {errors.username && touched.username ? (<Text style={styles.inputError}>{errors.username}</Text>) : null}
             </View>
             <View style={styles.inputContainer}>
-              <Text>{'password'}</Text>
+              <Text>{'Password'}</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
+                secureTextEntry
               />
               {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
             </View>
@@ -96,6 +101,7 @@ const SignUp = () => {
                 onChangeText={handleChange('passwordValidator')}
                 onBlur={handleBlur('passwordValidator')}
                 value={values.passwordValidator}
+                secureTextEntry
               />
               {
                 hasPasswordValidationErrors(touched, values)
@@ -108,7 +114,7 @@ const SignUp = () => {
               type="submit"
               onPress={handleSubmit}
             >
-              <Text style={styles.submitButtonText}>Create Account</Text>
+              <Text>Create Account</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -137,16 +143,19 @@ const styles = StyleSheet.create({
     marginBottom: 28
   },
   formContainer: {
-    width: '80%'
+    width: '80%',
+    // backgroundColor: 'green'
   },
   inputContainer: {
     marginBottom: 20,
-    height: 80
+    height: 80,
+    // backgroundColor: 'blue'
   },
   input: {
     borderWidth: 1,
     borderRadius: 8,
-    borderColor: '#e0e0e0'
+    borderColor: '#e0e0e0',
+    width: '100%'
   },
   inputError: {
     color: 'red'
