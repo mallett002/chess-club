@@ -39,6 +39,7 @@ const hasPasswordValidationErrors = (touched, values) => {
 // TODO: make the button disabled if not all fields valid or loading
 // TODO: keyboard aware scrollview
 // TODO: look at finishing layout styles for android & iOS
+// TODO: input styles should just use padding instead of height
 
 const SignUp = () => {
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
