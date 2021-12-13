@@ -36,6 +36,10 @@ const hasPasswordValidationErrors = (touched, values) => {
   return false;
 };
 
+// TODO: make the button disabled if not all fields valid or loading
+// TODO: keyboard aware scrollview
+// TODO: look at finishing layout styles for android & iOS
+
 const SignUp = () => {
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
 
