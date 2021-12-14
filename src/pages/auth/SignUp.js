@@ -44,7 +44,7 @@ const hasValues = (values) => {
 
   Object.keys(values).forEach((key) => {
     if (values[key]) {
-      return true;
+      hasSome = true;
     }
   });
 
