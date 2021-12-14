@@ -1,12 +1,11 @@
 import React from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { SafeAreaView, View, Text, StyleSheet, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 
-// bobbyTwoShoes229
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
     .min(2, 'Must be at least 2 characters')
@@ -17,7 +16,8 @@ const SignupSchema = Yup.object().shape({
     .min(2, 'Must be at least 2 characters')
     .max(20, 'Must be no longer than 20 characters')
     .matches(/^[ A-Za-z0-9_@./#&+-]*$/i, 'Username contains invalid characters')
-    .required('Required')
+    .required('Required'),
+  passwordValidator: Yup.string().required()
 });
 
 const CREATE_PLAYER_MUTATION = gql`
@@ -28,18 +28,28 @@ const CREATE_PLAYER_MUTATION = gql`
   }
 `;
 
-const hasPasswordValidationErrors = (touched, values) => {
+const passwordsMatch = (touched, values) => {
   if (touched.passwordValidator && values.password && values.passwordValidator) {
-    return values.passwordValidator !== values.password;
+    return values.passwordValidator === values.password;
   }
 
-  return false;
+  return true;
 };
 
 // TODO: make the button disabled if not all fields valid or loading
-// TODO: keyboard aware scrollview
-// TODO: look at finishing layout styles for android & iOS
-// TODO: input styles should just use padding instead of height
+// TODO: keyboard aware scrollview & hide the header on this screen
+
+const hasValues = (values) => {
+  let hasSome = false;
+
+  Object.keys(values).forEach((key) => {
+    if (values[key]) {
+      return true;
+    }
+  });
+
+  return hasSome;
+};
 
 const SignUp = () => {
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
@@ -55,7 +65,11 @@ const SignUp = () => {
   }
 
   return (
-    <SafeAreaView style={styles.signUpContainer}>
+    <KeyboardAvoidingView
+      behavior="padding"
+      // keyboardVerticalOffset = {80}
+      style={styles.signUpContainer}
+    >
       <View style={styles.header}>
         <Text style={styles.title}>{'Sign Up'}</Text>
         <Text style={styles.subtitle}>{'Create an account an start playing!'}</Text>
@@ -109,13 +123,16 @@ const SignUp = () => {
                 secureTextEntry
               />
               {
-                hasPasswordValidationErrors(touched, values)
+                errors.passwordValidator && touched.passwordValidator || !passwordsMatch(touched, values)
                   ? (<Text style={styles.inputError}>{'Passwords do not match!'}</Text>)
                   : null
               }
+              {hasValues(values) ? <Text>{JSON.stringify(values)}</Text> : null}
+              {!passwordsMatch(touched, values) ? <Text>{'passwords dont match'}</Text> : null}
             </View>
             <TouchableOpacity
-              style={styles.submitButton}
+              disabled={!hasValues(values) && Object.keys(errors).length || !passwordsMatch(touched, values)}
+              style={[styles.submitButton]}
               type="submit"
               onPress={handleSubmit}
             >
@@ -124,7 +141,7 @@ const SignUp = () => {
           </View>
         )}
       </Formik>
-    </SafeAreaView >
+    </KeyboardAvoidingView >
   );
 };
 
@@ -148,19 +165,18 @@ const styles = StyleSheet.create({
     marginBottom: 28
   },
   formContainer: {
-    width: '80%',
-    // backgroundColor: 'green'
+    width: '80%'
   },
   inputContainer: {
     marginBottom: 20,
-    height: 80,
-    // backgroundColor: 'blue'
+    height: 80
   },
   input: {
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#e0e0e0',
-    width: '100%'
+    width: '100%',
+    paddingHorizontal: 10
   },
   inputError: {
     color: 'red'
