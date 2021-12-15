@@ -29,7 +29,7 @@ const CREATE_PLAYER_MUTATION = gql`
 `;
 
 const passwordsMatch = (touched, values) => {
-  if (touched.passwordValidator && values.password && values.passwordValidator) {
+  if (touched.passwordValidator && values.password) {
     return values.passwordValidator === values.password;
   }
 
@@ -39,16 +39,32 @@ const passwordsMatch = (touched, values) => {
 // TODO: make the button disabled if not all fields valid or loading
 // TODO: keyboard aware scrollview & hide the header on this screen
 
-const hasValues = (values) => {
-  let hasSome = false;
+const getNotAllFieldsFilled = (values) => {
+  
+  const hasAnEmptyField = Object.keys(values).some((key) => !values[key]);
 
-  Object.keys(values).forEach((key) => {
-    if (values[key]) {
-      hasSome = true;
-    }
-  });
+  return hasAnEmptyField
+};
 
-  return hasSome;
+// schema.dirty (initialValues have changed)
+const isDisabled = (schema, touched, values) => {
+  // TODO: This is the one ("dirty") that's not working. Just use the getNotAllFieldsFilled func above ^^
+  // if (!schema.dirty) {
+  //   console.log('schema is not dirty');
+  // }
+
+  // Think this one's working now:
+  if (getNotAllFieldsFilled(values)) {
+    console.log('not all fields filled');
+  }
+  if (!schema.isValid) {
+    console.log('schema is not valid');
+  }
+  if (!passwordsMatch(touched, values)) {
+    console.log('passwords do not match..');
+  }
+
+  return getNotAllFieldsFilled(values) || !schema.isValid || !passwordsMatch(touched, values);
 };
 
 const SignUp = () => {
@@ -122,17 +138,23 @@ const SignUp = () => {
                 value={values.passwordValidator}
                 secureTextEntry
               />
-              {
+              {/* {
                 errors.passwordValidator && touched.passwordValidator || !passwordsMatch(touched, values)
                   ? (<Text style={styles.inputError}>{'Passwords do not match!'}</Text>)
                   : null
+              } */}
+              {/* {!SignupSchema.dirty ? <Text>{'schema is not dirty'}</Text> : null}
+              {!SignupSchema.isValid ? <Text>{'schema is not valid'}</Text> : null} */}
+              {/* {isDisabled(SignupSchema, touched, values) ? <Text>{'button is disabled'}</Text> : null} */}
+              {!passwordsMatch(touched, values) ? <Text>{'passwords do not match'}</Text> : null}
+              {isDisabled(SignupSchema, touched, values)
+                ? <Text>{'button is disabled'}</Text>
+                : <Text>{'button is enabled'}</Text>
               }
-              {hasValues(values) ? <Text>{JSON.stringify(values)}</Text> : null}
-              {!passwordsMatch(touched, values) ? <Text>{'passwords dont match'}</Text> : null}
             </View>
             <TouchableOpacity
-              disabled={!hasValues(values) && Object.keys(errors).length || !passwordsMatch(touched, values)}
-              style={[styles.submitButton]}
+              disabled={isDisabled(SignupSchema, touched, values)}
+              style={getSubmitButtonStyles(SignupSchema, values, touched)}
               type="submit"
               onPress={handleSubmit}
             >
@@ -143,6 +165,26 @@ const SignUp = () => {
       </Formik>
     </KeyboardAvoidingView >
   );
+};
+
+
+const getSubmitButtonStyles = (schema, values, touched) => {
+  const buttonStyles = {
+    backgroundColor: "#841584",
+    height: 40,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 150,
+    color: 'blue'
+  };
+
+  if (isDisabled(schema, touched, values)) {
+    buttonStyles.backgroundColor = 'gray';
+    buttonStyles.color = 'red';
+  }
+
+  return styles;
 };
 
 const styles = StyleSheet.create({
@@ -184,17 +226,6 @@ const styles = StyleSheet.create({
   submitContainer: {
     alignItems: 'center',
     marginTop: 20
-  },
-  submitButton: {
-    backgroundColor: "#841584",
-    height: 40,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 150
-  },
-  submitButtonText: {
-    color: '#FFFFFF'
   }
 });
 
