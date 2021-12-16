@@ -15,9 +15,9 @@ const SignupSchema = Yup.object().shape({
   password: Yup.string()
     .min(2, 'Must be at least 2 characters')
     .max(20, 'Must be no longer than 20 characters')
-    .matches(/^[ A-Za-z0-9_@./#&+-]*$/i, 'Username contains invalid characters')
+    .matches(/^[ A-Za-z0-9_@./#&+-]*$/i, 'Password contains invalid characters')
     .required('Required'),
-  passwordValidator: Yup.string().required()
+  passwordConfirm: Yup.string().oneOf([Yup.ref('password'), null], "Passwords don't match").required('Confirm Password is required')
 });
 
 const CREATE_PLAYER_MUTATION = gql`
@@ -28,44 +28,32 @@ const CREATE_PLAYER_MUTATION = gql`
   }
 `;
 
-const passwordsMatch = (touched, values) => {
-  if (touched.passwordValidator && values.password) {
-    return values.passwordValidator === values.password;
-  }
+// const passwordsMatch = (touched, values) => {
+//   if (touched.passwordConfirm && values.password) {
+//     return values.passwordConfirm === values.password;
+//   }
 
-  return true;
-};
+//   console.log({valPass: values.password});
+
+//   return false;
+// };
 
 // TODO: make the button disabled if not all fields valid or loading
 // TODO: keyboard aware scrollview & hide the header on this screen
 
-const getNotAllFieldsFilled = (values) => {
+// const getNotAllFieldsFilled = (values) => {
   
-  const hasAnEmptyField = Object.keys(values).some((key) => !values[key]);
+//   const hasAnEmptyField = Object.keys(values).some((key) => !values[key]);
 
-  return hasAnEmptyField
-};
+//   return hasAnEmptyField
+// };
 
-// schema.dirty (initialValues have changed)
-const isDisabled = (schema, touched, values) => {
-  // TODO: This is the one ("dirty") that's not working. Just use the getNotAllFieldsFilled func above ^^
-  // if (!schema.dirty) {
-  //   console.log('schema is not dirty');
-  // }
+// const isDisabled = (schema, dirty) => {
+//   // getNotAllFieldsFilled(values) || !schema.isValid || (touched.passwordConfirm && values.password) && !passwordsMatch(touched, values);
+//   console.log({dirty: dirty})
 
-  // Think this one's working now:
-  if (getNotAllFieldsFilled(values)) {
-    console.log('not all fields filled');
-  }
-  if (!schema.isValid) {
-    console.log('schema is not valid');
-  }
-  if (!passwordsMatch(touched, values)) {
-    console.log('passwords do not match..');
-  }
-
-  return getNotAllFieldsFilled(values) || !schema.isValid || !passwordsMatch(touched, values);
-};
+//   return !(schema.isValid && dirty)
+// };
 
 const SignUp = () => {
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
@@ -94,7 +82,7 @@ const SignUp = () => {
         initialValues={{
           username: '',
           password: '',
-          passwordValidator: ''
+          passwordConfirm: ''
         }}
         validationSchema={SignupSchema}
         onSubmit={({ username, password }) => {
@@ -130,35 +118,27 @@ const SignUp = () => {
               {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
             </View>
             <View style={styles.inputContainer}>
-              <Text>{'Re-enter Password'}</Text>
+              <Text>{'Password Confirmation'}</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={handleChange('passwordValidator')}
-                onBlur={handleBlur('passwordValidator')}
-                value={values.passwordValidator}
+                onChangeText={handleChange('passwordConfirm')}
+                onBlur={handleBlur('passwordConfirm')}
+                value={values.passwordConfirm}
                 secureTextEntry
               />
-              {/* {
-                errors.passwordValidator && touched.passwordValidator || !passwordsMatch(touched, values)
-                  ? (<Text style={styles.inputError}>{'Passwords do not match!'}</Text>)
-                  : null
-              } */}
-              {/* {!SignupSchema.dirty ? <Text>{'schema is not dirty'}</Text> : null}
-              {!SignupSchema.isValid ? <Text>{'schema is not valid'}</Text> : null} */}
-              {/* {isDisabled(SignupSchema, touched, values) ? <Text>{'button is disabled'}</Text> : null} */}
-              {!passwordsMatch(touched, values) ? <Text>{'passwords do not match'}</Text> : null}
-              {isDisabled(SignupSchema, touched, values)
-                ? <Text>{'button is disabled'}</Text>
-                : <Text>{'button is enabled'}</Text>
-              }
+              {errors.passwordConfirm && touched.passwordConfirm ? <Text style={styles.inputError}>{errors.passwordConfirm}</Text>: null}
             </View>
             <TouchableOpacity
-              disabled={isDisabled(SignupSchema, touched, values)}
+              disabled={!Object.keys(touched).length || Object.keys(errors).length}
               style={getSubmitButtonStyles(SignupSchema, values, touched)}
               type="submit"
               onPress={handleSubmit}
             >
-              <Text>Create Account</Text>
+              {/* todo: change this after get it working properly */}
+              { !Object.keys(touched).length || Object.keys(errors).length
+                ? <Text>{'Disabled'}</Text>
+                : <Text>{'Create Account'}</Text>
+              }
             </TouchableOpacity>
           </View>
         )}
@@ -168,7 +148,7 @@ const SignUp = () => {
 };
 
 
-const getSubmitButtonStyles = (schema, values, touched) => {
+const getSubmitButtonStyles = (errors) => {
   const buttonStyles = {
     backgroundColor: "#841584",
     height: 40,
@@ -179,12 +159,11 @@ const getSubmitButtonStyles = (schema, values, touched) => {
     color: 'blue'
   };
 
-  if (isDisabled(schema, touched, values)) {
+  if (Object.keys(errors).length) {
     buttonStyles.backgroundColor = 'gray';
-    buttonStyles.color = 'red';
   }
 
-  return styles;
+  return buttonStyles;
 };
 
 const styles = StyleSheet.create({
