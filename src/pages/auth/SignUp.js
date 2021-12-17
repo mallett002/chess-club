@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView } from 'react-n
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
@@ -44,79 +44,79 @@ const SignUp = () => {
   return (
     <KeyboardAwareScrollView
       behavior="padding"
-      style={styles.signUpContainer}
+      // style={styles.signUpContainer}
     >
-        <View style={styles.header}>
-          <Text style={styles.title}>{'Sign Up'}</Text>
-          <Text style={styles.subtitle}>{'Create an account an start playing!'}</Text>
-        </View>
-        <Formik
-          initialValues={{
-            username: '',
-            password: '',
-            passwordConfirm: ''
-          }}
-          validateOnChange
-          validateOnBlur
-          validationSchema={SignupSchema}
-          onSubmit={({ username, password }) => {
-            mutate({
-              variables: {
-                username,
-                password
-              }
-            });
-          }}
-        >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-            <View style={styles.formContainer}>
-              <View style={styles.inputContainer}>
-                <Text>{'Username'}</Text>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={handleChange('username')}
-                  onBlur={handleBlur('username')}
-                  value={values.username}
-                />
-                {errors.username && touched.username ? (<Text style={styles.inputError}>{errors.username}</Text>) : null}
-              </View>
-              <View style={styles.inputContainer}>
-                <Text>{'Password'}</Text>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  value={values.password}
-                  secureTextEntry
-                />
-                {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
-              </View>
-              <View style={styles.inputContainer}>
-                <Text>{'Password Confirmation'}</Text>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={handleChange('passwordConfirm')}
-                  onBlur={handleBlur('passwordConfirm')}
-                  value={values.passwordConfirm}
-                  secureTextEntry
-                />
-                {errors.passwordConfirm && touched.passwordConfirm ? <Text style={styles.inputError}>{errors.passwordConfirm}</Text> : null}
-              </View>
-              <TouchableOpacity
-                disabled={!Object.keys(touched).length || Object.keys(errors).length}
-                style={getSubmitButtonStyles(SignupSchema, values, touched)}
-                type="submit"
-                onPress={handleSubmit}
-              >
-                {/* todo: change this after get it working properly */}
-                {!Object.keys(touched).length || Object.keys(errors).length
-                  ? <Text>{'Disabled'}</Text>
-                  : <Text>{'Create Account'}</Text>
-                }
-              </TouchableOpacity>
+      <View style={styles.header}>
+        <Text style={styles.title}>{'Sign Up'}</Text>
+        <Text style={styles.subtitle}>{'Create an account an start playing!'}</Text>
+      </View>
+      <Formik
+        initialValues={{
+          username: '',
+          password: '',
+          passwordConfirm: ''
+        }}
+        validateOnChange
+        validateOnBlur
+        validationSchema={SignupSchema}
+        onSubmit={({ username, password }) => {
+          mutate({
+            variables: {
+              username,
+              password
+            }
+          });
+        }}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          <View style={styles.formContainer}>
+            <View style={styles.inputContainer}>
+              <Text>{'Username'}</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={handleChange('username')}
+                onBlur={handleBlur('username')}
+                value={values.username}
+              />
+              {errors.username && touched.username ? (<Text style={styles.inputError}>{errors.username}</Text>) : null}
             </View>
-          )}
-        </Formik>
+            <View style={styles.inputContainer}>
+              <Text>{'Password'}</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                value={values.password}
+                secureTextEntry
+              />
+              {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
+            </View>
+            <View style={styles.inputContainer}>
+              <Text>{'Password Confirmation'}</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={handleChange('passwordConfirm')}
+                onBlur={handleBlur('passwordConfirm')}
+                value={values.passwordConfirm}
+                secureTextEntry
+              />
+              {errors.passwordConfirm && touched.passwordConfirm ? <Text style={styles.inputError}>{errors.passwordConfirm}</Text> : null}
+            </View>
+            <TouchableOpacity
+              disabled={!Object.keys(touched).length || Object.keys(errors).length}
+              style={getSubmitButtonStyles(SignupSchema, values, touched)}
+              type="submit"
+              onPress={handleSubmit}
+            >
+              {/* todo: change this after get it working properly */}
+              {!Object.keys(touched).length || Object.keys(errors).length
+                ? <Text>{'Disabled'}</Text>
+                : <Text>{'Create Account'}</Text>
+              }
+            </TouchableOpacity>
+          </View>
+        )}
+      </Formik>
     </KeyboardAwareScrollView>
   );
 };
@@ -127,7 +127,7 @@ const getSubmitButtonStyles = (errors) => {
     backgroundColor: "#841584",
     height: 40,
     borderRadius: 8,
-    // alignItems: 'center',
+    alignItems: 'center',
     justifyContent: 'center',
     width: 150,
     color: 'blue'
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center'
   },
   header: {
-    // alignItems: 'center',
+    alignItems: 'center',
     marginTop: 100 // TODO: calculate this, maybe 1/3 page down
   },
   title: {
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     color: 'red'
   },
   submitContainer: {
-    // alignItems: 'center',
+    alignItems: 'center',
     marginTop: 20
   }
 });
