@@ -41,6 +41,8 @@ const SignUp = () => {
     return <View><Text>{JSON.stringify(data.createPlayer)}</Text></View>
   }
 
+
+  // TODO: fix the align items styles
   return (
     <KeyboardAwareScrollView
       behavior="padding"
