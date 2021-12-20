@@ -41,12 +41,11 @@ const SignUp = () => {
     return <View><Text>{JSON.stringify(data.createPlayer)}</Text></View>
   }
 
-
-  // TODO: fix the align items styles
   return (
     <KeyboardAwareScrollView
-      behavior="padding"
-      // style={styles.signUpContainer}
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      contentContainerStyle={styles.signUpContainer}
+      scrollEnabled={false}
     >
       <View style={styles.header}>
         <Text style={styles.title}>{'Sign Up'}</Text>
@@ -75,7 +74,7 @@ const SignUp = () => {
             <View style={styles.inputContainer}>
               <Text>{'Username'}</Text>
               <TextInput
-                style={styles.input}
+                style={getInputStyles(errors.username, touched.username)}
                 onChangeText={handleChange('username')}
                 onBlur={handleBlur('username')}
                 value={values.username}
@@ -85,7 +84,7 @@ const SignUp = () => {
             <View style={styles.inputContainer}>
               <Text>{'Password'}</Text>
               <TextInput
-                style={styles.input}
+                style={getInputStyles(errors.password, touched.password)}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
@@ -96,7 +95,7 @@ const SignUp = () => {
             <View style={styles.inputContainer}>
               <Text>{'Password Confirmation'}</Text>
               <TextInput
-                style={styles.input}
+                style={getInputStyles(errors.passwordConfirm, touched.passwordConfirm)}
                 onChangeText={handleChange('passwordConfirm')}
                 onBlur={handleBlur('passwordConfirm')}
                 value={values.passwordConfirm}
@@ -106,15 +105,11 @@ const SignUp = () => {
             </View>
             <TouchableOpacity
               disabled={!Object.keys(touched).length || Object.keys(errors).length}
-              style={getSubmitButtonStyles(SignupSchema, values, touched)}
+              style={[styles.submitContainer, getSubmitButtonStyles(touched, errors)]}
               type="submit"
               onPress={handleSubmit}
             >
-              {/* todo: change this after get it working properly */}
-              {!Object.keys(touched).length || Object.keys(errors).length
-                ? <Text>{'Disabled'}</Text>
-                : <Text>{'Create Account'}</Text>
-              }
+              <Text style={styles.buttonText}>{'Create Account'}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -124,27 +119,37 @@ const SignUp = () => {
 };
 
 
-const getSubmitButtonStyles = (errors) => {
+const getSubmitButtonStyles = (touched, errors) => {
   const buttonStyles = {
-    backgroundColor: "#841584",
+    backgroundColor: "red",
     height: 40,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     width: 150,
-    color: 'blue'
+    color: 'white'
   };
 
-  if (Object.keys(errors).length) {
+  if (!Object.keys(touched).length || Object.keys(errors).length) {
     buttonStyles.backgroundColor = 'gray';
   }
 
   return buttonStyles;
 };
 
+const getInputStyles = (error, touched) => {
+  const style = {...styles.input};
+
+  if (touched && error) {
+    style.borderBottomColor = 'red';
+  }
+
+  return style;
+};
+
 const styles = StyleSheet.create({
   signUpContainer: {
-    // alignItems: 'center'
+    alignItems: 'center'
   },
   header: {
     alignItems: 'center',
@@ -162,7 +167,7 @@ const styles = StyleSheet.create({
     marginBottom: 28
   },
   formContainer: {
-    width: '80%'
+    width: '90%'
   },
   inputContainer: {
     marginBottom: 20,
@@ -179,8 +184,11 @@ const styles = StyleSheet.create({
     color: 'red'
   },
   submitContainer: {
-    alignItems: 'center',
+    alignSelf: 'center',
     marginTop: 20
+  },
+  buttonText: {
+    color: 'white'
   }
 });
 
