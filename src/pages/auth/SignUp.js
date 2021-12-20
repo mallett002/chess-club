@@ -1,6 +1,6 @@
 import React from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -61,56 +61,67 @@ const SignUp = () => {
         validateOnBlur
         validationSchema={SignupSchema}
         onSubmit={({ username, password }) => {
+          setIsSubmitting(true);
           mutate({
             variables: {
               username,
               password
             }
           });
+          setIsSubmitting(false);
         }}
       >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
           <View style={styles.formContainer}>
-            <View style={styles.inputContainer}>
-              <Text>{'Username'}</Text>
-              <TextInput
-                style={getInputStyles(errors.username, touched.username)}
-                onChangeText={handleChange('username')}
-                onBlur={handleBlur('username')}
-                value={values.username}
-              />
-              {errors.username && touched.username ? (<Text style={styles.inputError}>{errors.username}</Text>) : null}
-            </View>
-            <View style={styles.inputContainer}>
-              <Text>{'Password'}</Text>
-              <TextInput
-                style={getInputStyles(errors.password, touched.password)}
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                value={values.password}
-                secureTextEntry
-              />
-              {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
-            </View>
-            <View style={styles.inputContainer}>
-              <Text>{'Password Confirmation'}</Text>
-              <TextInput
-                style={getInputStyles(errors.passwordConfirm, touched.passwordConfirm)}
-                onChangeText={handleChange('passwordConfirm')}
-                onBlur={handleBlur('passwordConfirm')}
-                value={values.passwordConfirm}
-                secureTextEntry
-              />
-              {errors.passwordConfirm && touched.passwordConfirm ? <Text style={styles.inputError}>{errors.passwordConfirm}</Text> : null}
-            </View>
-            <TouchableOpacity
-              disabled={!Object.keys(touched).length || Object.keys(errors).length}
-              style={[styles.submitContainer, getSubmitButtonStyles(touched, errors)]}
-              type="submit"
-              onPress={handleSubmit}
-            >
-              <Text style={styles.buttonText}>{'Create Account'}</Text>
-            </TouchableOpacity>
+            {
+              isSubmitting
+                ? <ActivityIndicator
+                  color={'red'}
+                  size={'large'}
+                />
+                : <>
+                  <View style={styles.inputContainer}>
+                    <Text>{'Username'}</Text>
+                    <TextInput
+                      style={getInputStyles(errors.username, touched.username)}
+                      onChangeText={handleChange('username')}
+                      onBlur={handleBlur('username')}
+                      value={values.username}
+                    />
+                    {errors.username && touched.username ? (<Text style={styles.inputError}>{errors.username}</Text>) : null}
+                  </View>
+                  <View style={styles.inputContainer}>
+                    <Text>{'Password'}</Text>
+                    <TextInput
+                      style={getInputStyles(errors.password, touched.password)}
+                      onChangeText={handleChange('password')}
+                      onBlur={handleBlur('password')}
+                      value={values.password}
+                      secureTextEntry
+                    />
+                    {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
+                  </View>
+                  <View style={styles.inputContainer}>
+                    <Text>{'Password Confirmation'}</Text>
+                    <TextInput
+                      style={getInputStyles(errors.passwordConfirm, touched.passwordConfirm)}
+                      onChangeText={handleChange('passwordConfirm')}
+                      onBlur={handleBlur('passwordConfirm')}
+                      value={values.passwordConfirm}
+                      secureTextEntry
+                    />
+                    {errors.passwordConfirm && touched.passwordConfirm ? <Text style={styles.inputError}>{errors.passwordConfirm}</Text> : null}
+                  </View>
+                  <TouchableOpacity
+                    disabled={!Object.keys(touched).length || Object.keys(errors).length}
+                    style={[styles.submitContainer, getSubmitButtonStyles(touched, errors)]}
+                    type="submit"
+                    onPress={handleSubmit}
+                  >
+                    <Text style={styles.buttonText}>{'Create Account'}</Text>
+                  </TouchableOpacity>
+                </>
+            }
           </View>
         )}
       </Formik>
@@ -138,7 +149,7 @@ const getSubmitButtonStyles = (touched, errors) => {
 };
 
 const getInputStyles = (error, touched) => {
-  const style = {...styles.input};
+  const style = { ...styles.input };
 
   if (touched && error) {
     style.borderBottomColor = 'red';
