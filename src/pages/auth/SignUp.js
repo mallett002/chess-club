@@ -120,6 +120,10 @@ const SignUp = () => {
           </View>
         )}
       </Formik>
+      {/* Todo: Make this link active once login screen is done */}
+      <View style={styles.loginLinkContainer}>
+        <Text>{'Already have an account? Go to login.'}</Text>
+      </View>
     </KeyboardAwareScrollView>
   );
 };
@@ -195,6 +199,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white'
+  },
+  loginLinkContainer: {
+    marginTop: 50
   }
 });
 
