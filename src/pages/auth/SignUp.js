@@ -1,10 +1,12 @@
 import React from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { View, Text, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, Dimensions } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+const {height} = Dimensions.get('window');
 
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginTop: 100 // TODO: calculate this, maybe 1/3 page down
+    marginTop: height * 0.15
   },
   title: {
     fontSize: 32,
