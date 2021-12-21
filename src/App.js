@@ -66,7 +66,11 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false
+          }}
+        >
           {isLoggedIn ? (
             <Stack.Screen name="Home" component={LoggedInTabScreens} />
           ): (
