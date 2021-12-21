@@ -60,68 +60,63 @@ const SignUp = () => {
         validateOnChange
         validateOnBlur
         validationSchema={SignupSchema}
-        onSubmit={({ username, password }) => {
-          setIsSubmitting(true);
+        onSubmit={({ username, password }, actions) => {
           mutate({
             variables: {
               username,
               password
             }
           });
-          setIsSubmitting(false);
+
+          actions.setSubmitting(false);
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
           <View style={styles.formContainer}>
-            {
-              isSubmitting
-                ? <ActivityIndicator
-                  color={'red'}
-                  size={'large'}
-                />
-                : <>
-                  <View style={styles.inputContainer}>
-                    <Text>{'Username'}</Text>
-                    <TextInput
-                      style={getInputStyles(errors.username, touched.username)}
-                      onChangeText={handleChange('username')}
-                      onBlur={handleBlur('username')}
-                      value={values.username}
-                    />
-                    {errors.username && touched.username ? (<Text style={styles.inputError}>{errors.username}</Text>) : null}
-                  </View>
-                  <View style={styles.inputContainer}>
-                    <Text>{'Password'}</Text>
-                    <TextInput
-                      style={getInputStyles(errors.password, touched.password)}
-                      onChangeText={handleChange('password')}
-                      onBlur={handleBlur('password')}
-                      value={values.password}
-                      secureTextEntry
-                    />
-                    {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
-                  </View>
-                  <View style={styles.inputContainer}>
-                    <Text>{'Password Confirmation'}</Text>
-                    <TextInput
-                      style={getInputStyles(errors.passwordConfirm, touched.passwordConfirm)}
-                      onChangeText={handleChange('passwordConfirm')}
-                      onBlur={handleBlur('passwordConfirm')}
-                      value={values.passwordConfirm}
-                      secureTextEntry
-                    />
-                    {errors.passwordConfirm && touched.passwordConfirm ? <Text style={styles.inputError}>{errors.passwordConfirm}</Text> : null}
-                  </View>
-                  <TouchableOpacity
-                    disabled={!Object.keys(touched).length || Object.keys(errors).length}
-                    style={[styles.submitContainer, getSubmitButtonStyles(touched, errors)]}
-                    type="submit"
-                    onPress={handleSubmit}
-                  >
-                    <Text style={styles.buttonText}>{'Create Account'}</Text>
-                  </TouchableOpacity>
-                </>
-            }
+            <View style={styles.inputContainer}>
+              <Text>{'Username'}</Text>
+              <TextInput
+                style={getInputStyles(errors.username, touched.username)}
+                onChangeText={handleChange('username')}
+                onBlur={handleBlur('username')}
+                value={values.username}
+              />
+              {errors.username && touched.username ? (<Text style={styles.inputError}>{errors.username}</Text>) : null}
+            </View>
+            <View style={styles.inputContainer}>
+              <Text>{'Password'}</Text>
+              <TextInput
+                style={getInputStyles(errors.password, touched.password)}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                value={values.password}
+                secureTextEntry
+              />
+              {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
+            </View>
+            <View style={styles.inputContainer}>
+              <Text>{'Password Confirmation'}</Text>
+              <TextInput
+                style={getInputStyles(errors.passwordConfirm, touched.passwordConfirm)}
+                onChangeText={handleChange('passwordConfirm')}
+                onBlur={handleBlur('passwordConfirm')}
+                value={values.passwordConfirm}
+                secureTextEntry
+              />
+              {errors.passwordConfirm && touched.passwordConfirm ? <Text style={styles.inputError}>{errors.passwordConfirm}</Text> : null}
+            </View>
+            <TouchableOpacity
+              disabled={isSubmitting || !Object.keys(touched).length || Object.keys(errors).length}
+              style={[styles.submitContainer, getSubmitButtonStyles(touched, errors, isSubmitting)]}
+              type="submit"
+              onPress={handleSubmit}
+            >
+              {
+                isSubmitting
+                  ? <ActivityIndicator color={'white'} />
+                  : <Text style={styles.buttonText}>{'Create Account'}</Text>
+              }
+            </TouchableOpacity>
           </View>
         )}
       </Formik>
@@ -130,7 +125,7 @@ const SignUp = () => {
 };
 
 
-const getSubmitButtonStyles = (touched, errors) => {
+const getSubmitButtonStyles = (touched, errors, isSubmitting) => {
   const buttonStyles = {
     backgroundColor: "red",
     height: 40,
@@ -141,7 +136,7 @@ const getSubmitButtonStyles = (touched, errors) => {
     color: 'white'
   };
 
-  if (!Object.keys(touched).length || Object.keys(errors).length) {
+  if (isSubmitting || !Object.keys(touched).length || Object.keys(errors).length) {
     buttonStyles.backgroundColor = 'gray';
   }
 
