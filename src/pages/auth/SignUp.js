@@ -51,6 +51,7 @@ const SignUp = () => {
 
   if (data && data.createPlayer) {
     // TODO: store the token somewhere, redux? context? some sort of local storage?
+    // https://react-native-async-storage.github.io/async-storage/docs/install/
     return <View><Text>{JSON.stringify(data.createPlayer)}</Text></View>
   }
 
