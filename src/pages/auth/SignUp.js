@@ -33,8 +33,19 @@ const CREATE_PLAYER_MUTATION = gql`
 const SignUp = () => {
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
 
-  if (loading) return (<View><Text>{'Submitting...'}</Text></View>);
+  if (loading) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator
+          color={'red'}
+          size={'large'}
+        />
+      </View>
+      );
+  }
+
   if (error) {
+    // Todo: make an error screen component
     return (<View><Text>{'an error occurred...'}</Text></View>);
   }
 
@@ -162,6 +173,9 @@ const getInputStyles = (error, touched) => {
 const styles = StyleSheet.create({
   signUpContainer: {
     alignItems: 'center'
+  },
+  loader: {
+    marginTop: height * 0.15
   },
   header: {
     alignItems: 'center',
