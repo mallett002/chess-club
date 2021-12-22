@@ -1,6 +1,6 @@
 import React from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, Dimensions, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -197,14 +197,14 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 20,
-    height: 80
+    minHeight: 80
   },
   input: {
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#e0e0e0',
     width: '100%',
-    paddingHorizontal: 10
+    padding: Platform.OS === 'android' ? 10 : 16
   },
   inputError: {
     color: 'red'
