@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import React, {useEffect} from 'react';
-import { Text, View, Button, StyleSheet } from 'react-native';
+import { Text, View, Button } from 'react-native';
 
 import CurrentGames from './current-games';
 

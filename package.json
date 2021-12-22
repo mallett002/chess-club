@@ -17,15 +17,18 @@
     "@react-navigation/bottom-tabs": "5.11.15",
     "@react-navigation/native": "5.9.8",
     "@react-navigation/stack": "^5.14.5",
+    "formik": "^2.2.9",
     "graphql": "^15.5.1",
     "react": "17.0.1",
     "react-native": "0.64.0",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-reanimated": "^2.1.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.1.0",
     "react-native-uuid": "^2.0.1",
-    "react-native-vector-icons": "^8.1.0"
+    "react-native-vector-icons": "^8.1.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -41,7 +44,9 @@
   "jest": {
     "verbose": true,
     "preset": "react-native",
-    "setupFiles": ["./node_modules/react-native-gesture-handler/jestSetup.js"],
+    "setupFiles": [
+      "./node_modules/react-native-gesture-handler/jestSetup.js"
+    ],
     "transformIgnorePatterns": [
       "node_modules/(?!(react-native|react-native-iphone-x-helper|@react-native|react-native-vector-icons|@react-navigation)/)"
     ]
