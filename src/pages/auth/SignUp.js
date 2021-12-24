@@ -6,6 +6,8 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
+import {storeToken, getToken} from '../../utils/token-utils';
+
 const {height} = Dimensions.get('window');
 
 const SignupSchema = Yup.object().shape({
@@ -50,13 +52,14 @@ const SignUp = () => {
   }
 
   if (data && data.createPlayer) {
-    // TODO: store the token somewhere, redux? context? some sort of local storage?
-    return <View><Text>{JSON.stringify(data.createPlayer)}</Text></View>
+    // TODO: use async-storage library. Already installed, ready to use.
+
+    storeToken(data.createPlayer.token).then(() => getToken().then((t) => console.log(t)));
+    // return <View><Text>{JSON.stringify(data.createPlayer.token)}</Text></View>
   }
 
   return (
     <KeyboardAwareScrollView
-      resetScrollToCoords={{ x: 0, y: 0 }}
       contentContainerStyle={styles.signUpContainer}
       scrollEnabled={false}
     >
