@@ -60,7 +60,6 @@ const SignUp = () => {
 
   return (
     <KeyboardAwareScrollView
-      resetScrollToCoords={{ x: 0, y: 0 }}
       contentContainerStyle={styles.signUpContainer}
       scrollEnabled={false}
     >
