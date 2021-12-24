@@ -10,7 +10,7 @@ export const storeToken = async (token) => {
 
 export const getToken = () => {
   try {
-    return AsyncStorage.getItem('token')
+    return AsyncStorage.getItem('token');
   } catch (error) {
     console.log({error});
   } 
