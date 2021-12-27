@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Platform, AppRegistry } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -13,10 +13,10 @@ import ProfileScreen from './pages/profile/profile-screen';
 import ChatsScreen from './pages/chats/chats-screen';
 import { tabScreenOptions } from './components/nav/helpers';
 import SignUpScreen from './pages/auth/SignUp';
-import { getToken } from './utils/token-utils';
+import { getTokenFromStorage } from './utils/token-utils';
 
 const client = new ApolloClient({
-  uri: 'http://[local_base_url]/graphql',
+  uri: 'http://192.168.0.220:4000/graphql',
   cache: new InMemoryCache()
 });
 
@@ -63,23 +63,18 @@ function LoggedInTabScreens() {
 }
 
 function App() {
-  let isLoggedIn = false;
-  let token = null;
+  const [accessToken, setAccessToken] = useState('');
+  const [username, setUsername] = useState('');
+  const context = {
+    accessToken,
+    setAccessToken,
+    username,
+    setUsername
+  };
 
-  useEffect(() => {
-    function setTokenContext() {
-      getToken().then((t) => {
-          token = t;
-          isLoggedIn = true;
-      });
-    };
-
-    setTokenContext();
-  }, [isLoggedIn, token]);
-
-  console.log({isLoggedIn, token});
+  console.log({ accessToken, username });
   return (
-    <AppContext.Provider value={token}>
+    <AppContext.Provider value={context}>
       <ApolloProvider client={client}>
         <NavigationContainer>
           <Stack.Navigator
@@ -87,7 +82,7 @@ function App() {
               headerShown: false
             }}
           >
-            {isLoggedIn ? (
+            {accessToken ? (
               <Stack.Screen name="Home" component={LoggedInTabScreens} />
             ) : (
               <Stack.Screen name="SignUp" component={SignUpScreen} />
