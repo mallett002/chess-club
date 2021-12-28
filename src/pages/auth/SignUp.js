@@ -35,7 +35,7 @@ const CREATE_PLAYER_MUTATION = gql`
 
 const SignUp = () => {
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
-  const {setAccessToken, setUsername} = useContext(AppContext);
+  const {setAccessToken, setUsername, setPlayerId} = useContext(AppContext);
 
   if (loading) {
     return (
@@ -60,9 +60,10 @@ const SignUp = () => {
     persistTokenInStorage(token).then((token) => {
       setAccessToken(token);
 
-      const {username} = decodeJwt(token);
+      const {sub, playerId} = decodeJwt(token);
 
-      setUsername(username);
+      setUsername(sub);
+      setPlayerId(playerId);
     });
   }
 

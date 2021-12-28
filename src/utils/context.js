@@ -4,5 +4,7 @@ export const AppContext = createContext({
   accessToken: '',
   setAccessToken: () => {},
   username: '',
-  setUsername: () => {}
+  setUsername: () => {},
+  playerId: '',
+  setPlayerId: () => {}
 });

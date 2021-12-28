@@ -1,4 +1,4 @@
-import {decode} from 'jsonwebtoken'
+import jwt_decode from 'jwt-decode'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const persistTokenInStorage = async (token) => {
@@ -19,11 +19,8 @@ export const getTokenFromStorage = () => {
   } 
 };
 
-// TODO: install config and use it for this
 export const decodeJwt = (accessToken) => {
   const [, token] = accessToken.split(' ');
-  // const privateKey = config.get('tokenPrivateKey');
 
-  // This seems to be causing an error
-  // return decode(accessToken);
+  return jwt_decode(token);
 };

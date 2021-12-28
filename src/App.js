@@ -13,10 +13,9 @@ import ProfileScreen from './pages/profile/profile-screen';
 import ChatsScreen from './pages/chats/chats-screen';
 import { tabScreenOptions } from './components/nav/helpers';
 import SignUpScreen from './pages/auth/SignUp';
-import { getTokenFromStorage } from './utils/token-utils';
 
 const client = new ApolloClient({
-  uri: 'http://192.168.0.220:4000/graphql',
+  uri: 'http://[redacted]/graphql',
   cache: new InMemoryCache()
 });
 
@@ -65,14 +64,16 @@ function LoggedInTabScreens() {
 function App() {
   const [accessToken, setAccessToken] = useState('');
   const [username, setUsername] = useState('');
+  const [playerId, setPlayerId] = useState('');
   const context = {
     accessToken,
     setAccessToken,
     username,
-    setUsername
+    setUsername,
+    playerId,
+    setPlayerId
   };
 
-  console.log({ accessToken, username });
   return (
     <AppContext.Provider value={context}>
       <ApolloProvider client={client}>
