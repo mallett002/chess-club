@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, Dimensions, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -6,7 +6,8 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import {storeToken, getToken} from '../../utils/token-utils';
+import {persistTokenInStorage, decodeJwt} from '../../utils/token-utils';
+import {AppContext} from '../../utils/context';
 
 const {height} = Dimensions.get('window');
 
@@ -34,6 +35,7 @@ const CREATE_PLAYER_MUTATION = gql`
 
 const SignUp = () => {
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
+  const {setAccessToken, setUsername, setPlayerId} = useContext(AppContext);
 
   if (loading) {
     return (
@@ -52,10 +54,17 @@ const SignUp = () => {
   }
 
   if (data && data.createPlayer) {
-    // TODO: use async-storage library. Already installed, ready to use.
+    const {token} = data.createPlayer;
 
-    storeToken(data.createPlayer.token).then(() => getToken().then((t) => console.log(t)));
-    // return <View><Text>{JSON.stringify(data.createPlayer.token)}</Text></View>
+    // TODO: pull this out to function
+    persistTokenInStorage(token).then((token) => {
+      setAccessToken(token);
+
+      const {sub, playerId} = decodeJwt(token);
+
+      setUsername(sub);
+      setPlayerId(playerId);
+    });
   }
 
   return (

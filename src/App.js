@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Platform, AppRegistry } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 // import { persistCache } from 'apollo3-cache-persist'
 
+import { AppContext } from './utils/context';
 import HomeScreen from './pages/home/home-screen';
 import GamesStack from './pages/games/games-stack';
 import ProfileScreen from './pages/profile/profile-screen';
@@ -14,7 +15,7 @@ import { tabScreenOptions } from './components/nav/helpers';
 import SignUpScreen from './pages/auth/SignUp';
 
 const client = new ApolloClient({
-  uri: 'http://[local_base_url]/graphql',
+  uri: 'http://[redacted]/graphql',
   cache: new InMemoryCache()
 });
 
@@ -61,24 +62,36 @@ function LoggedInTabScreens() {
 }
 
 function App() {
-  const isLoggedIn = false;
+  const [accessToken, setAccessToken] = useState('');
+  const [username, setUsername] = useState('');
+  const [playerId, setPlayerId] = useState('');
+  const context = {
+    accessToken,
+    setAccessToken,
+    username,
+    setUsername,
+    playerId,
+    setPlayerId
+  };
 
   return (
-    <ApolloProvider client={client}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false
-          }}
-        >
-          {isLoggedIn ? (
-            <Stack.Screen name="Home" component={LoggedInTabScreens} />
-          ): (
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </ApolloProvider >
+    <AppContext.Provider value={context}>
+      <ApolloProvider client={client}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false
+            }}
+          >
+            {accessToken ? (
+              <Stack.Screen name="Home" component={LoggedInTabScreens} />
+            ) : (
+              <Stack.Screen name="SignUp" component={SignUpScreen} />
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ApolloProvider>
+    </AppContext.Provider>
   );
 }
 
