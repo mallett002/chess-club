@@ -14,6 +14,7 @@ import ChatsScreen from './pages/chats/chats-screen';
 import { tabScreenOptions } from './components/nav/helpers';
 import SignUpScreen from './pages/auth/SignUp';
 
+// Todo: Pull off to own file
 const client = new ApolloClient({
   uri: 'http://[redacted]/graphql',
   cache: new InMemoryCache()
