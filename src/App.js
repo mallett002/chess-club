@@ -13,6 +13,7 @@ import ProfileScreen from './pages/profile/profile-screen';
 import ChatsScreen from './pages/chats/chats-screen';
 import { tabScreenOptions } from './components/nav/helpers';
 import SignUpScreen from './pages/auth/SignUp';
+import { decodeJwt, getTokenFromStorage } from './utils/token-utils';
 
 // Todo: Pull off to own file
 const client = new ApolloClient({
@@ -74,6 +75,19 @@ function App() {
     playerId,
     setPlayerId
   };
+
+  useEffect(() => {
+    getTokenFromStorage().then((storageToken) => {
+      if (storageToken && !accessToken) {
+        const { sub, playerId } = decodeJwt(storageToken);
+
+        setAccessToken(storageToken);
+        setUsername(sub);
+        setPlayerId(playerId);
+      }
+    });
+
+  }, [accessToken]);
 
   return (
     <AppContext.Provider value={context}>

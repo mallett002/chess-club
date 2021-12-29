@@ -11,9 +11,15 @@ export const persistTokenInStorage = async (token) => {
   }
 };
 
-export const getTokenFromStorage = () => {
+export const getTokenFromStorage = async () => {
   try {
-    return AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem('token');
+
+    if (!token) {
+      return null;
+    }
+
+    return token;
   } catch (error) {
     console.log({error});
   } 
