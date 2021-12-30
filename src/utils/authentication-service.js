@@ -6,16 +6,16 @@ import { persistTokenInStorage, decodeJwt } from './token-utils';
 export const useAuthentication = (data) => {
   const { setAccessToken, setUsername, setPlayerId } = useContext(AppContext);
 
-  const authenticateUser = async (token) => {
-    await persistTokenInStorage(token);
-    const { sub, playerId } = decodeJwt(token);
-
-    setAccessToken(token);
-    setUsername(sub);
-    setPlayerId(playerId);
-  };
-
   useEffect(() => {
+    const authenticateUser = async (token) => {
+      await persistTokenInStorage(token);
+      const { sub, playerId } = decodeJwt(token);
+  
+      setAccessToken(token);
+      setUsername(sub);
+      setPlayerId(playerId);
+    };
+
     if (data && data.createPlayer && data.createPlayer.token) {
       authenticateUser(data.createPlayer.token);
     }
