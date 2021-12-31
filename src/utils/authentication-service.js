@@ -1,3 +1,4 @@
+import { responsePathAsArray } from 'graphql';
 import { useContext, useEffect } from 'react';
 
 import { AppContext } from './context';
@@ -10,7 +11,7 @@ export const useAuthentication = (data) => {
     const authenticateUser = async (token) => {
       await persistTokenInStorage(token);
       const { sub, playerId } = decodeJwt(token);
-  
+
       setAccessToken(token);
       setUsername(sub);
       setPlayerId(playerId);
@@ -21,3 +22,26 @@ export const useAuthentication = (data) => {
     }
   }, [data]);
 };
+
+export async function logInFetch(username, password) {
+  const response = await fetch('http://192.168.0.220:4000/login', {
+    method: 'POST',
+    body: JSON.stringify({
+      username,
+      password
+    }),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response || !response.ok) {
+    console.log('whoops');
+    return null;
+  }
+
+  const json = await response.json();
+
+  return json.token;
+}
