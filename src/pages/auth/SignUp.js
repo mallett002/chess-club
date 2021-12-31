@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, Dimensions, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -6,10 +6,9 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import {persistTokenInStorage, decodeJwt} from '../../utils/token-utils';
-import {AppContext} from '../../utils/context';
+import { useAuthentication } from '../../utils/authentication-service';
 
-const {height} = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
@@ -35,7 +34,8 @@ const CREATE_PLAYER_MUTATION = gql`
 
 const SignUp = () => {
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
-  const {setAccessToken, setUsername, setPlayerId} = useContext(AppContext);
+
+  useAuthentication(data);
 
   if (loading) {
     return (
@@ -45,26 +45,12 @@ const SignUp = () => {
           size={'large'}
         />
       </View>
-      );
+    );
   }
 
   if (error) {
     // Todo: make an error screen component
     return (<View><Text>{'an error occurred...'}</Text></View>);
-  }
-
-  if (data && data.createPlayer) {
-    const {token} = data.createPlayer;
-
-    // TODO: pull this out to function
-    persistTokenInStorage(token).then((token) => {
-      setAccessToken(token);
-
-      const {sub, playerId} = decodeJwt(token);
-
-      setUsername(sub);
-      setPlayerId(playerId);
-    });
   }
 
   return (
