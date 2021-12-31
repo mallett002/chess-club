@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform, AppRegistry } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -76,21 +76,23 @@ function App() {
     setPlayerId
   };
 
-  const setAuthContextFromStorage = useCallback(() => {
-    getTokenFromStorage().then((storageToken) => {
-      if (storageToken && !accessToken) {
-        const { sub, playerId } = decodeJwt(storageToken);
-
-        setAccessToken(storageToken);
-        setUsername(sub);
-        setPlayerId(playerId);
-      }
-    });
-  }, [accessToken, setAccessToken, setUsername, setPlayerId, decodeJwt]);
-
   useEffect(() => {
-    setAuthContextFromStorage();
-  }, [setAuthContextFromStorage]);
+    const persistAuthState = async () => {
+      if (!accessToken) {
+        const storageToken = await getTokenFromStorage();
+
+        if (storageToken) {
+          const { sub, playerId } = decodeJwt(storageToken);
+  
+          setAccessToken(storageToken);
+          setUsername(sub);
+          setPlayerId(playerId);
+        }
+      }
+    };
+
+    persistAuthState();
+  }, [accessToken]);
 
   return (
     <AppContext.Provider value={context}>
