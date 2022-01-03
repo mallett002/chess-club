@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, Dimensions, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -6,7 +6,8 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { logInFetch } from '../../utils/authentication-service';
+import { logInFetch, authenticateUser } from '../../utils/authentication-service';
+import { AppContext } from '../../utils/context';
 
 const { height } = Dimensions.get('window');
 
@@ -23,38 +24,10 @@ const LogInSchema = Yup.object().shape({
     .required('Required')
 });
 
-// const CREATE_PLAYER_MUTATION = gql`
-//   mutation CreatePlayer($username: String!, $password: String!) {
-//     createPlayer(username: $username, password: $password) {
-//       token
-//     }
-//   }
-// `;
 
 const LogIn = () => {
-  // const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
-
-  // useAuthentication(data);
-
-  // if (loading) {
-  //   return (
-  //     <View style={styles.loader}>
-  //       <ActivityIndicator
-  //         color={'red'}
-  //         size={'large'}
-  //       />
-  //     </View>
-  //   );
-  // }
-
-  // if (error) {
-  //   // Todo: make an error screen component
-  //   return (<View><Text>{'an error occurred...'}</Text></View>);
-  // }
-
-  // useEffect(() => {
-    
-  // });
+  const { setAccessToken, setUsername, setPlayerId } = useContext(AppContext);
+  const [error, setError] = useState(null);
 
   return (
     <KeyboardAwareScrollView
@@ -73,12 +46,15 @@ const LogIn = () => {
         validateOnChange
         validateOnBlur
         validationSchema={LogInSchema}
-        onSubmit={async ({ username, password }, actions) => {
+        onSubmit={async ({username, password}, actions) => {
           const token = await logInFetch(username, password);
-          // Todo: set the token in context and storage
-          console.log({tokenInOnSubmit: token});
-
-          actions.setSubmitting(false);
+      
+          if (token) {
+            await authenticateUser(token, setAccessToken, setUsername, setPlayerId);
+            actions.setSubmitting(false);      
+          } else {
+            setError('Something went wrong.');
+          }
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
@@ -104,6 +80,7 @@ const LogIn = () => {
               />
               {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
             </View>
+            {error ? <Text style={styles.inputError}>{'Something went wrong. Check username and password'}</Text> : null}
             <TouchableOpacity
               disabled={isSubmitting || !Object.keys(touched).length || Object.keys(errors).length}
               style={[styles.submitContainer, getSubmitButtonStyles(touched, errors, isSubmitting)]}

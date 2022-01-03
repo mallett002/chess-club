@@ -4,21 +4,25 @@ import { useContext, useEffect } from 'react';
 import { AppContext } from './context';
 import { persistTokenInStorage, decodeJwt } from './token-utils';
 
+export async function authenticateUser(token, setAccessToken, setUsername, setPlayerId) {
+  await persistTokenInStorage(token);
+  const { sub, playerId } = decodeJwt(token);
+
+  setAccessToken(token);
+  setUsername(sub);
+  setPlayerId(playerId);
+}
+
 export const useAuthentication = (data) => {
   const { setAccessToken, setUsername, setPlayerId } = useContext(AppContext);
 
   useEffect(() => {
-    const authenticateUser = async (token) => {
-      await persistTokenInStorage(token);
-      const { sub, playerId } = decodeJwt(token);
-
-      setAccessToken(token);
-      setUsername(sub);
-      setPlayerId(playerId);
+    const setUser = async (token) => {
+      await authenticateUser(token, setAccessToken, setUsername, setPlayerId);
     };
 
     if (data && data.createPlayer && data.createPlayer.token) {
-      authenticateUser(data.createPlayer.token);
+      setUser(data.createPlayer.token);
     }
   }, [data]);
 };
@@ -37,7 +41,6 @@ export async function logInFetch(username, password) {
   });
 
   if (!response || !response.ok) {
-    console.log('whoops');
     return null;
   }
 
