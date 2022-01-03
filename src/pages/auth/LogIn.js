@@ -81,6 +81,7 @@ const LogIn = () => {
               {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
             </View>
             {error ? <Text style={styles.inputError}>{'Something went wrong. Check username and password'}</Text> : null}
+            {/* Todo: prevent onPress outside this button */}
             <TouchableOpacity
               disabled={isSubmitting || !Object.keys(touched).length || Object.keys(errors).length}
               style={[styles.submitContainer, getSubmitButtonStyles(touched, errors, isSubmitting)]}
