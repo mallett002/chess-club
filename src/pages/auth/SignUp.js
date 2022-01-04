@@ -116,6 +116,7 @@ const SignUp = () => {
               />
               {errors.passwordConfirm && touched.passwordConfirm ? <Text style={styles.inputError}>{errors.passwordConfirm}</Text> : null}
             </View>
+            {/* Todo: fix this submit button styles to be like login */}
             <TouchableOpacity
               disabled={isSubmitting || !Object.keys(touched).length || Object.keys(errors).length}
               style={[styles.submitContainer, getSubmitButtonStyles(touched, errors, isSubmitting)]}

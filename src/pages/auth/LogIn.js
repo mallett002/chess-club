@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, Dimensions, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
@@ -81,23 +80,24 @@ const LogIn = () => {
               {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
             </View>
             {error ? <Text style={styles.inputError}>{'Something went wrong. Check username and password'}</Text> : null}
-            {/* Todo: prevent onPress outside this button */}
-            <TouchableOpacity
-              disabled={isSubmitting || !Object.keys(touched).length || Object.keys(errors).length}
-              style={[styles.submitContainer, getSubmitButtonStyles(touched, errors, isSubmitting)]}
-              type="submit"
-              onPress={handleSubmit}
-            >
-              {
-                isSubmitting
-                  ? <ActivityIndicator color={'white'} />
-                  : <Text style={styles.buttonText}>{'Login'}</Text>
-              }
-            </TouchableOpacity>
+            <View style={styles.submitContainer}>
+              <TouchableOpacity
+                disabled={isSubmitting || !Object.keys(touched).length || Object.keys(errors).length}
+                style={getSubmitButtonStyles(touched, errors, isSubmitting)}
+                type="submit"
+                onPress={handleSubmit}
+              >
+                {
+                  isSubmitting
+                    ? <ActivityIndicator color={'white'} />
+                    : <Text style={styles.buttonText}>{'Login'}</Text>
+                }
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </Formik>
-      {/* Todo: Make this link active once login screen is done */}
+      {/* Todo: Make this link active */}
       <View style={styles.loginLinkContainer}>
         <Text>{"Don't have an account? Create one!"}</Text>
       </View>
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     color: 'red'
   },
   submitContainer: {
-    alignSelf: 'center',
+    alignItems: 'center',
     marginTop: 20
   },
   buttonText: {
