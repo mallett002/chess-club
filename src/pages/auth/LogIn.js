@@ -1,16 +1,16 @@
-import React from 'react';
-import { gql, useMutation } from '@apollo/client';
+import React, { useContext, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, Dimensions, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { useAuthentication } from '../../utils/authentication-service';
+import { logInFetch, authenticateUser } from '../../utils/authentication-service';
+import { AppContext } from '../../utils/context';
 
 const { height } = Dimensions.get('window');
 
-const SignupSchema = Yup.object().shape({
+const LogInSchema = Yup.object().shape({
   username: Yup.string()
     .min(2, 'Must be at least 2 characters')
     .max(20, 'Must be no longer than 20 characters')
@@ -20,61 +20,40 @@ const SignupSchema = Yup.object().shape({
     .min(5, 'Must be at least 5 characters')
     .max(20, 'Must be no longer than 20 characters')
     .matches(/^[ A-Za-z0-9_@!$./#&+-]*$/i, 'Password contains invalid characters')
-    .required('Required'),
-  passwordConfirm: Yup.string().oneOf([Yup.ref('password'), null], "Passwords don't match").required('Confirm Password is required')
+    .required('Required')
 });
 
-const CREATE_PLAYER_MUTATION = gql`
-  mutation CreatePlayer($username: String!, $password: String!) {
-    createPlayer(username: $username, password: $password) {
-      token
-    }
-  }
-`;
 
-const SignUp = () => {
-  const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
-
-  useAuthentication(data);
-
-  if (loading) {
-    return (
-      <View style={styles.loader}>
-        <ActivityIndicator
-          color={'red'}
-          size={'large'}
-        />
-      </View>
-    );
-  }
+const LogIn = () => {
+  const { setAccessToken, setUsername, setPlayerId } = useContext(AppContext);
+  const [error, setError] = useState(null);
 
   return (
     <KeyboardAwareScrollView
-      contentContainerStyle={styles.signUpContainer}
+      contentContainerStyle={styles.LogInContainer}
       scrollEnabled={false}
     >
       <View style={styles.header}>
-        <Text style={styles.title}>{'Sign Up'}</Text>
-        <Text style={styles.subtitle}>{'Create an account an start playing!'}</Text>
+        <Text style={styles.title}>{'Player Login'}</Text>
+        <Text style={styles.subtitle}>{"Let's get you going."}</Text>
       </View>
       <Formik
         initialValues={{
           username: '',
-          password: '',
-          passwordConfirm: ''
+          password: ''
         }}
         validateOnChange
         validateOnBlur
-        validationSchema={SignupSchema}
-        onSubmit={({ username, password }, actions) => {
-          mutate({
-            variables: {
-              username,
-              password
-            }
-          });
-
-          actions.setSubmitting(false);
+        validationSchema={LogInSchema}
+        onSubmit={async ({username, password}, actions) => {
+          const token = await logInFetch(username, password);
+      
+          if (token) {
+            await authenticateUser(token, setAccessToken, setUsername, setPlayerId);
+            actions.setSubmitting(false);      
+          } else {
+            setError('Something went wrong.');
+          }
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
@@ -87,7 +66,7 @@ const SignUp = () => {
                 onBlur={handleBlur('username')}
                 value={values.username}
               />
-              {errors.username && touched.username ? (<Text style={styles.inputError}>{errors.username}</Text>) : null}
+              {errors.username && touched.username ? (<Text style={styles.textError}>{errors.username}</Text>) : null}
             </View>
             <View style={styles.inputContainer}>
               <Text>{'Password'}</Text>
@@ -98,22 +77,10 @@ const SignUp = () => {
                 value={values.password}
                 secureTextEntry
               />
-              {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
-            </View>
-            <View style={styles.inputContainer}>
-              <Text>{'Password Confirmation'}</Text>
-              <TextInput
-                style={getInputStyles(errors.passwordConfirm, touched.passwordConfirm)}
-                onChangeText={handleChange('passwordConfirm')}
-                onBlur={handleBlur('passwordConfirm')}
-                value={values.passwordConfirm}
-                secureTextEntry
-              />
-              {errors.passwordConfirm && touched.passwordConfirm ? <Text style={styles.inputError}>{errors.passwordConfirm}</Text> : null}
+              {errors.password && touched.password ? (<Text style={styles.textError}>{errors.password}</Text>) : null}
             </View>
             <View style={styles.serverError}>
-              {/* Todo: Check error for conflict. Show username exists error? */}
-              {error ? <Text style={styles.inputError}>{'Something went wrong. Try again.'}</Text> : null}
+              {error ? <Text style={styles.textError}>{'Something went wrong. Check username and password'}</Text> : null}
             </View>
             <View style={styles.submitContainer}>
               <TouchableOpacity
@@ -125,16 +92,16 @@ const SignUp = () => {
                 {
                   isSubmitting
                     ? <ActivityIndicator color={'white'} />
-                    : <Text style={styles.buttonText}>{'Create Account'}</Text>
+                    : <Text style={styles.buttonText}>{'Login'}</Text>
                 }
               </TouchableOpacity>
             </View>
           </View>
         )}
       </Formik>
-      {/* Todo: Make this link active once login screen is done */}
+      {/* Todo: Make this link active */}
       <View style={styles.loginLinkContainer}>
-        <Text>{'Already have an account? Go to login.'}</Text>
+        <Text>{"Don't have an account? Create one!"}</Text>
       </View>
     </KeyboardAwareScrollView>
   );
@@ -170,7 +137,7 @@ const getInputStyles = (error, touched) => {
 };
 
 const styles = StyleSheet.create({
-  signUpContainer: {
+  LogInContainer: {
     alignItems: 'center'
   },
   loader: {
@@ -182,7 +149,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    color: 'red', // unsure of colors and styles for now
+    color: 'red',
     fontWeight: '500',
     marginBottom: 10
   },
@@ -196,7 +163,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 20,
-    minHeight: 80
+    height: 80
   },
   input: {
     borderWidth: 1,
@@ -205,15 +172,14 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: Platform.OS === 'android' ? 10 : 16
   },
-  inputError: {
+  textError: {
     color: 'red'
   },
   serverError: {
-    height: 20,
-    alignItems: 'center'
+    height: 20
   },
   submitContainer: {
-    alignSelf: 'center',
+    alignItems: 'center',
     marginTop: 20
   },
   buttonText: {
@@ -224,4 +190,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default SignUp;
+export default LogIn;

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform, AppRegistry } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -13,6 +13,7 @@ import ProfileScreen from './pages/profile/profile-screen';
 import ChatsScreen from './pages/chats/chats-screen';
 import { tabScreenOptions } from './components/nav/helpers';
 import SignUpScreen from './pages/auth/SignUp';
+import LogInScreen from './pages/auth/LogIn';
 import { decodeJwt, getTokenFromStorage } from './utils/token-utils';
 
 // Todo: Pull off to own file
@@ -76,21 +77,23 @@ function App() {
     setPlayerId
   };
 
-  const setAuthContextFromStorage = useCallback(() => {
-    getTokenFromStorage().then((storageToken) => {
-      if (storageToken && !accessToken) {
-        const { sub, playerId } = decodeJwt(storageToken);
-
-        setAccessToken(storageToken);
-        setUsername(sub);
-        setPlayerId(playerId);
-      }
-    });
-  }, [accessToken, setAccessToken, setUsername, setPlayerId, decodeJwt]);
-
   useEffect(() => {
-    setAuthContextFromStorage();
-  }, [setAuthContextFromStorage]);
+    const persistAuthState = async () => {
+      if (!accessToken) {
+        const storageToken = await getTokenFromStorage();
+
+        if (storageToken) {
+          const { sub, playerId } = decodeJwt(storageToken);
+
+          setAccessToken(storageToken);
+          setUsername(sub);
+          setPlayerId(playerId);
+        }
+      }
+    };
+
+    persistAuthState();
+  }, [accessToken]);
 
   return (
     <AppContext.Provider value={context}>
@@ -104,7 +107,10 @@ function App() {
             {accessToken ? (
               <Stack.Screen name="Home" component={LoggedInTabScreens} />
             ) : (
-              <Stack.Screen name="SignUp" component={SignUpScreen} />
+              <>
+                <Stack.Screen name="LogIn" component={LogInScreen} />
+                <Stack.Screen name="SignUp" component={SignUpScreen} />
+              </>
             )}
           </Stack.Navigator>
         </NavigationContainer>
