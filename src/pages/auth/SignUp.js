@@ -48,11 +48,6 @@ const SignUp = () => {
     );
   }
 
-  if (error) {
-    // Todo: make an error screen component
-    return (<View><Text>{'an error occurred...'}</Text></View>);
-  }
-
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.signUpContainer}
@@ -116,19 +111,24 @@ const SignUp = () => {
               />
               {errors.passwordConfirm && touched.passwordConfirm ? <Text style={styles.inputError}>{errors.passwordConfirm}</Text> : null}
             </View>
-            {/* Todo: fix this submit button styles to be like login */}
-            <TouchableOpacity
-              disabled={isSubmitting || !Object.keys(touched).length || Object.keys(errors).length}
-              style={[styles.submitContainer, getSubmitButtonStyles(touched, errors, isSubmitting)]}
-              type="submit"
-              onPress={handleSubmit}
-            >
-              {
-                isSubmitting
-                  ? <ActivityIndicator color={'white'} />
-                  : <Text style={styles.buttonText}>{'Create Account'}</Text>
-              }
-            </TouchableOpacity>
+            <View style={styles.serverError}>
+              {/* Todo: Check error for conflict. Show username exists error? */}
+              {error ? <Text style={styles.inputError}>{'Something went wrong. Try again.'}</Text> : null}
+            </View>
+            <View style={styles.submitContainer}>
+              <TouchableOpacity
+                disabled={isSubmitting || !Object.keys(touched).length || Object.keys(errors).length}
+                style={getSubmitButtonStyles(touched, errors, isSubmitting)}
+                type="submit"
+                onPress={handleSubmit}
+              >
+                {
+                  isSubmitting
+                    ? <ActivityIndicator color={'white'} />
+                    : <Text style={styles.buttonText}>{'Create Account'}</Text>
+                }
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </Formik>
@@ -207,6 +207,10 @@ const styles = StyleSheet.create({
   },
   inputError: {
     color: 'red'
+  },
+  serverError: {
+    height: 20,
+    alignItems: 'center'
   },
   submitContainer: {
     alignSelf: 'center',
