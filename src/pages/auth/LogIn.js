@@ -66,7 +66,7 @@ const LogIn = () => {
                 onBlur={handleBlur('username')}
                 value={values.username}
               />
-              {errors.username && touched.username ? (<Text style={styles.inputError}>{errors.username}</Text>) : null}
+              {errors.username && touched.username ? (<Text style={styles.textError}>{errors.username}</Text>) : null}
             </View>
             <View style={styles.inputContainer}>
               <Text>{'Password'}</Text>
@@ -77,9 +77,11 @@ const LogIn = () => {
                 value={values.password}
                 secureTextEntry
               />
-              {errors.password && touched.password ? (<Text style={styles.inputError}>{errors.password}</Text>) : null}
+              {errors.password && touched.password ? (<Text style={styles.textError}>{errors.password}</Text>) : null}
             </View>
-            {error ? <Text style={styles.inputError}>{'Something went wrong. Check username and password'}</Text> : null}
+            <View style={styles.serverError}>
+              {error ? <Text style={styles.textError}>{'Something went wrong. Check username and password'}</Text> : null}
+            </View>
             <View style={styles.submitContainer}>
               <TouchableOpacity
                 disabled={isSubmitting || !Object.keys(touched).length || Object.keys(errors).length}
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    color: 'red', // unsure of colors and styles for now
+    color: 'red',
     fontWeight: '500',
     marginBottom: 10
   },
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 20,
-    minHeight: 80
+    height: 80
   },
   input: {
     borderWidth: 1,
@@ -170,8 +172,11 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: Platform.OS === 'android' ? 10 : 16
   },
-  inputError: {
+  textError: {
     color: 'red'
+  },
+  serverError: {
+    height: 20
   },
   submitContainer: {
     alignItems: 'center',
