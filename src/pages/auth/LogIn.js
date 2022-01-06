@@ -110,7 +110,7 @@ const LogIn = () => {
           {"Not registered? "}
           <Text
             onPress={goToSignUp}
-            style={{color: 'red'}}
+            style={styles.linkText}
           >
             {'Create an account.'}
           </Text>
@@ -200,7 +200,8 @@ const styles = StyleSheet.create({
   },
   loginLinkContainer: {
     marginTop: 50
-  }
+  },
+  linkText: {color: 'red'}
 });
 
 export default LogIn;

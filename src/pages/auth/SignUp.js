@@ -142,7 +142,7 @@ const SignUp = () => {
           {'Already have an account? '}
           <Text
             onPress={goToLogIn}
-            style={{color: 'red'}}
+            style={styles.linkText}
           >
             {'Go to login.'}
           </Text>
@@ -233,7 +233,8 @@ const styles = StyleSheet.create({
   },
   loginLinkContainer: {
     marginTop: 50
-  }
+  },
+  linkText: {color: 'red'}
 });
 
 export default SignUp;
