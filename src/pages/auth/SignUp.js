@@ -5,6 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useNavigation } from '@react-navigation/native';
 
 import { useAuthentication } from '../../utils/authentication-service';
 
@@ -33,7 +34,11 @@ const CREATE_PLAYER_MUTATION = gql`
 `;
 
 const SignUp = () => {
+  const navigation = useNavigation();
   const [mutate, { data, loading, error }] = useMutation(CREATE_PLAYER_MUTATION);
+  const goToLogIn = () => {
+    navigation.navigate('LogIn');
+  };
 
   useAuthentication(data);
 
@@ -132,9 +137,16 @@ const SignUp = () => {
           </View>
         )}
       </Formik>
-      {/* Todo: Make this link active once login screen is done */}
       <View style={styles.loginLinkContainer}>
-        <Text>{'Already have an account? Go to login.'}</Text>
+        <Text>
+          {'Already have an account? '}
+          <Text
+            onPress={goToLogIn}
+            style={styles.linkText}
+          >
+            {'Go to login.'}
+          </Text>
+        </Text>
       </View>
     </KeyboardAwareScrollView>
   );
@@ -221,7 +233,8 @@ const styles = StyleSheet.create({
   },
   loginLinkContainer: {
     marginTop: 50
-  }
+  },
+  linkText: {color: 'red'}
 });
 
 export default SignUp;
