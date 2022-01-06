@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useNavigation } from '@react-navigation/native';
 
 import { logInFetch, authenticateUser } from '../../utils/authentication-service';
 import { AppContext } from '../../utils/context';
@@ -25,8 +26,13 @@ const LogInSchema = Yup.object().shape({
 
 
 const LogIn = () => {
+  const navigation = useNavigation();
   const { setAccessToken, setUsername, setPlayerId } = useContext(AppContext);
   const [error, setError] = useState(null);
+
+  const goToSignUp = () => {
+    navigation.navigate('SignUp');
+  };
 
   return (
     <KeyboardAwareScrollView
@@ -99,9 +105,16 @@ const LogIn = () => {
           </View>
         )}
       </Formik>
-      {/* Todo: Make this link active */}
       <View style={styles.loginLinkContainer}>
-        <Text>{"Don't have an account? Create one!"}</Text>
+        <Text>
+          {"Not registered? "}
+          <Text
+            onPress={goToSignUp}
+            style={{color: 'red'}}
+          >
+            {'Create an account.'}
+          </Text>
+        </Text>
       </View>
     </KeyboardAwareScrollView>
   );
