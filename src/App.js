@@ -3,8 +3,7 @@ import { Platform, AppRegistry } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-// import { persistCache } from 'apollo3-cache-persist'
+import { ApolloProvider } from '@apollo/client';
 
 import { AppContext } from './utils/context';
 import HomeScreen from './pages/home/home-screen';
@@ -15,12 +14,7 @@ import { tabScreenOptions } from './components/nav/helpers';
 import SignUpScreen from './pages/auth/SignUp';
 import LogInScreen from './pages/auth/LogIn';
 import { decodeJwt, getTokenFromStorage } from './utils/token-utils';
-
-// Todo: Pull off to own file
-const client = new ApolloClient({
-  uri: 'http://[redacted]/graphql',
-  cache: new InMemoryCache()
-});
+import { getClient } from './utils/gql-client';
 
 const getTabBarStyles = () => {
   const styles = {
@@ -97,7 +91,7 @@ function App() {
 
   return (
     <AppContext.Provider value={context}>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={getClient()}>
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{

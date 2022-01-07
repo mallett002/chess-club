@@ -26,21 +26,6 @@ const CURRENT_GAMES_QUERY = gql`
   }
 `;
 
-const INVITATIONS_QUERY = gql`
-  query GetInvitations {
-    getInvitations {
-      invitations {
-        invitationId
-        invitee
-      }
-      inboundGameRequests {
-        invitationId
-        invitor
-      }
-    }
-  }
-`;
-
 export default function GamesScreen({ navigation }) {
   const [createGameMutation, { data: createGameData, error: createGameError }] = useMutation(CREATE_GAME_MUTATION);
   const {
@@ -53,15 +38,6 @@ export default function GamesScreen({ navigation }) {
       playerId: 'some-guid-1'
     }
   });
-  const {
-    data: invitationsData,
-    error: invitationsError,
-    loading: invitationsLoading,
-    refetch: refetchInvitations
-  } = useQuery(INVITATIONS_QUERY);
-
-  // TODO: get invitations here and pass down to MyInvitations component
-  console.log({invitationsData});
 
   useEffect(() => {
     refetchCurrentGames({ variables: { playerId: 'some-guid-1' } });

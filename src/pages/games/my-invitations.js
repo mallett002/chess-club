@@ -2,33 +2,26 @@ import { gql, useQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import { Text, View, Button } from 'react-native';
 
-
-const CURRENT_GAMES_QUERY = gql`
-  query GetGames($playerId: ID!){
-    getGames(playerId: $playerId) {
-      gameId
-      playerOne
-      playerTwo
-      turn
-	  }
+const INVITATIONS_QUERY = gql`
+  query GetInvitations {
+    getInvitations {
+      invitations {
+        invitationId
+        invitee
+      }
+      inboundGameRequests {
+        invitationId
+        invitor
+      }
+    }
   }
 `;
 
 export default function MyInvitations() {
-  const {
-    data: currentGamesData,
-    error: currentGamesError,
-    loading: currentGamesLoading,
-    refetch: refetchCurrentGames
-  } = useQuery(MY_INVITATIONS_QUERY, {
-    variables: {
-      playerId: 'some-guid-1'
-    }
-  });
+  const { data, error, loading, refetch } = useQuery(INVITATIONS_QUERY);
 
-  // useEffect(() => {
-  //   refetchCurrentGames({ variables: { playerId: 'some-guid-1' } });
-  // }, [createGameData]);
+  // TODO: get invitations here and pass down to MyInvitations component
+  console.log({invites: data.getInvitations});
 
   return (
     <View>
