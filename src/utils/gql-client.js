@@ -1,34 +1,24 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 // Todo: use this??
 // import { persistCache } from 'apollo3-cache-persist'
+import { getTokenFromStorage } from '../utils/token-utils';
 
-let client;
+const httpLink = createHttpLink({
+  uri: 'http://[redacted]/graphql',
+});
+const authLink = setContext(async () => {
+  const headers = { authorization: '' };
+  const storageToken = await getTokenFromStorage()
 
-export function getClient() {
-  if (!client) {
-    const httpLink = createHttpLink({
-      uri: '/graphql',
-    });
-    const authLink = setContext((_, { headers }) => {
-      // get the authentication token from local storage if it exists
-      // const token = localStorage.getItem('token');
-      // TODO: get the token from context or async-storage
-      return {
-        headers: {
-          ...headers,
-          authorization: token ? token : "",
-        }
-      }
-    });
-
-    client = new ApolloClient({
-      uri: 'http://[redacted]/graphql',
-      cache: new InMemoryCache()
-      // TODO: Add it here:
-      // link: authLink.concat(httpLink),
-    });
+  if (storageToken) {
+    headers.authorization = storageToken;
   }
 
-  return client;
-}
+  return { headers }
+});
+
+export const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: authLink.concat(httpLink),
+});

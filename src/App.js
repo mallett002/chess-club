@@ -6,7 +6,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { ApolloProvider } from '@apollo/client';
 
 import { AppContext } from './utils/context';
-import HomeScreen from './pages/home/home-screen';
 import GamesStack from './pages/games/games-stack';
 import ProfileScreen from './pages/profile/profile-screen';
 import ChatsScreen from './pages/chats/chats-screen';
@@ -14,7 +13,7 @@ import { tabScreenOptions } from './components/nav/helpers';
 import SignUpScreen from './pages/auth/SignUp';
 import LogInScreen from './pages/auth/LogIn';
 import { decodeJwt, getTokenFromStorage } from './utils/token-utils';
-import { getClient } from './utils/gql-client';
+import { client } from './utils/gql-client';
 
 const getTabBarStyles = () => {
   const styles = {
@@ -50,7 +49,6 @@ function LoggedInTabScreens() {
         style: getTabBarStyles()
       }}
     >
-      <Tab.Screen name='Home' component={HomeScreen} />
       <Tab.Screen name='Games' component={GamesStack} />
       <Tab.Screen name='Profile' component={ProfileScreen} />
       <Tab.Screen name='Chats' component={ChatsScreen} />
@@ -91,7 +89,7 @@ function App() {
 
   return (
     <AppContext.Provider value={context}>
-      <ApolloProvider client={getClient()}>
+      <ApolloProvider client={client}>
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{
@@ -99,7 +97,7 @@ function App() {
             }}
           >
             {accessToken ? (
-              <Stack.Screen name="Home" component={LoggedInTabScreens} />
+              <Stack.Screen name="LoggedInScreens" component={LoggedInTabScreens} />
             ) : (
               <>
                 <Stack.Screen name="LogIn" component={LogInScreen} />

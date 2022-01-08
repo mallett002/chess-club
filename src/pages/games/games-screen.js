@@ -27,21 +27,21 @@ const CURRENT_GAMES_QUERY = gql`
 `;
 
 export default function GamesScreen({ navigation }) {
-  const [createGameMutation, { data: createGameData, error: createGameError }] = useMutation(CREATE_GAME_MUTATION);
-  const {
-    data: currentGamesData,
-    error: currentGamesError,
-    loading: currentGamesLoading,
-    refetch: refetchCurrentGames
-  } = useQuery(CURRENT_GAMES_QUERY, {
-    variables: {
-      playerId: 'some-guid-1'
-    }
-  });
+  // const [createGameMutation, { data: createGameData, error: createGameError }] = useMutation(CREATE_GAME_MUTATION);
+  // const {
+  //   data: currentGamesData,
+  //   error: currentGamesError,
+  //   loading: currentGamesLoading,
+  //   refetch: refetchCurrentGames
+  // } = useQuery(CURRENT_GAMES_QUERY, {
+  //   variables: {
+  //     playerId: 'some-guid-1'
+  //   }
+  // });
 
-  useEffect(() => {
-    refetchCurrentGames({ variables: { playerId: 'some-guid-1' } });
-  }, [createGameData]);
+  // useEffect(() => {
+  //   refetchCurrentGames({ variables: { playerId: 'some-guid-1' } });
+  // }, [createGameData]);
 
   return (
     <View>
@@ -54,12 +54,12 @@ export default function GamesScreen({ navigation }) {
       /> */}
       <Button
         onPress={async () => {
-          await createGameMutation({
-            variables: {
-              playerOne: "some-guid-1",
-              playerTwo: "some-guid-2"
-            }
-          });
+          // await createGameMutation({
+          //   variables: {
+          //     playerOne: "some-guid-1",
+          //     playerTwo: "some-guid-2"
+          //   }
+          // });
         }}
         title='Create Game (for now)'
         color='#841584'
