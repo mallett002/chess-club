@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
-import React, {useState} from 'react';
-import { Text, View, ActivityIndicator } from 'react-native';
+import React from 'react';
+import { TextInput, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const INVITATIONS_QUERY = gql`
@@ -20,8 +20,6 @@ const INVITATIONS_QUERY = gql`
 
 export default function MyInvitations() {
   const { data, error, loading, refetch } = useQuery(INVITATIONS_QUERY);
-  const [showInvitations, setShowInvitations] = useState(true);
-  const [showRequests, setShowRequests] = useState(true);
 
   if (error || !loading && !data || !loading && !data.getInvitations) {
     return (
@@ -48,20 +46,47 @@ export default function MyInvitations() {
   const { getInvitations: { invitations, inboundGameRequests } } = data;
 
   return (
-    <View>
+    <View style={styles.wrapper}>
       <View>
-        <TouchableOpacity onPress={() => setShowInvitations(!showInvitations)}>
-          <Text>{'My Invitations'}</Text>
-        </TouchableOpacity>
-        {showInvitations ?
-          invitations.length ?
-            invitations.map((invite) => <Text>{invite.invitee}</Text>) : <Text>{'You currently have not invited anyone'}</Text>
-          : null
+        <Text>{'My Invitations'}</Text>
+        <View>
+          <Text>{'Create an Invitation'}</Text>
+          <TextInput
+            placeholder={'username'}
+          />
+          <TouchableOpacity style={{ width: 80, height: 40 }}>
+            <Text>
+              {'Invite'}
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+        {
+          invitations.length
+            ? invitations.map((invite) => <Text>{invite.invitee}</Text>)
+            : <Text>{'You currently have not invited anyone.'}</Text>
         }
       </View>
       <View>
         <Text>{'Requests'}</Text>
+        {
+          inboundGameRequests.length
+            ? inboundGameRequests.map((request) => <Text>{request.invitor}</Text>)
+            : <Text>{"You currently don't have any requests to play."}</Text>
+        }
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    paddingHorizontal: 16
+  },
+  inviteButtonStyles: {
+    width: 80,
+    height: 40,
+    backgroundColor: 'red',
+    color: '#fff'
+  }
+});
