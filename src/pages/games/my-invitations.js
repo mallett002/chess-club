@@ -2,6 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 import { TextInput, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Feather from 'react-native-vector-icons/Feather';
 
 import { colors } from '../../constants/colors';
 
@@ -48,7 +49,8 @@ export default function MyInvitations() {
   // invitations: what I send out
   // inboundGameRequest: what come in
   const { getInvitations: { invitations: myRequests, inboundGameRequests } } = data;
-  const things = [{ invitor: 'jeffreyDSerb' }, { invitor: 'bmallYourPal' }, { invitor: 'dickTracy' }]
+  const fakeInvitations = [{ invitor: 'jeffreyDSerb' }, { invitor: 'bmallYourPal' }, { invitor: 'dickTracy' }];
+  const fakeRequests = [{ invitee: 'tStark' }, { invitee: 'snoozYaLoose' }, { invitee: 'tomHafferty' }];
 
   return (
     <View style={styles.wrapper}>
@@ -56,16 +58,16 @@ export default function MyInvitations() {
         <Text style={styles.sectionTitle}>{'My Invitations'}</Text>
         <View style={styles.sectionContent}>
           {
-            things.length
-              ? things.map((request, i) => <View key={i} style={styles.invitationItem}>
+            fakeInvitations.length
+              ? fakeInvitations.map((request, i) => <View key={i} style={styles.invitationItem}>
                 <Text>{request.invitor}</Text>
                 <TouchableOpacity style={{
                   backgroundColor: colors.DESTINATION_CELL,
                   borderRadius: 2,
                   paddingVertical: 2,
-                  paddingHorizontal: 6
+                  paddingHorizontal: 8
                 }}>
-                  <Text style={{color: '#FFF', paddingBottom: 2}}>{'Accept'}</Text>
+                  <Text style={{ color: '#FFF', paddingBottom: 2 }}>{'Accept'}</Text>
                 </TouchableOpacity>
               </View>)
               : <Text style={styles.noDataText}>{"You currently don't have any requests to play."}</Text>
@@ -74,10 +76,15 @@ export default function MyInvitations() {
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{'My Requests'}</Text>
+        {/* Todo: working on adding an "Add" icon */}
+        <Feather name={'add'} size={12} color={'red'} />
         <View style={styles.sectionContent}>
           {
-            myRequests.length
-              ? myRequests.map((request) => <Text>{request.invitee}</Text>)
+            fakeRequests.length
+              ? fakeRequests.map((request, i) => <View key={i} style={styles.invitationItem}>
+                <Text>{request.invitee}</Text>
+                <Text style={{color: colors.LIGHT_CELL, fontSize: 12}}>{'Pending'}</Text>
+              </View>)
               : <Text style={styles.noDataText}>{'You currently have not invited anyone.'}</Text>
           }
         </View>
