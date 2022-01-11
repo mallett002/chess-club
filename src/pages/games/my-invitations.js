@@ -3,6 +3,8 @@ import React from 'react';
 import { TextInput, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import { colors } from '../../constants/colors';
+
 const INVITATIONS_QUERY = gql`
   query GetInvitations {
     getInvitations {
@@ -43,37 +45,42 @@ export default function MyInvitations() {
     );
   }
 
-  const { getInvitations: { invitations, inboundGameRequests } } = data;
+  // invitations: what I send out
+  // inboundGameRequest: what come in
+  const { getInvitations: { invitations: myRequests, inboundGameRequests } } = data;
+  const things = [{ invitor: 'jeffreyDSerb' }, { invitor: 'bmallYourPal' }, { invitor: 'dickTracy' }]
 
   return (
     <View style={styles.wrapper}>
-      <View>
-        <Text>{'My Invitations'}</Text>
-        <View>
-          <Text>{'Create an Invitation'}</Text>
-          <TextInput
-            placeholder={'username'}
-          />
-          <TouchableOpacity style={{ width: 80, height: 40 }}>
-            <Text>
-              {'Invite'}
-            </Text>
-          </TouchableOpacity>
-
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{'My Invitations'}</Text>
+        <View style={styles.sectionContent}>
+          {
+            things.length
+              ? things.map((request, i) => <View key={i} style={styles.invitationItem}>
+                <Text>{request.invitor}</Text>
+                <TouchableOpacity style={{
+                  backgroundColor: colors.DESTINATION_CELL,
+                  borderRadius: 2,
+                  paddingVertical: 2,
+                  paddingHorizontal: 6
+                }}>
+                  <Text style={{color: '#FFF', paddingBottom: 2}}>{'Accept'}</Text>
+                </TouchableOpacity>
+              </View>)
+              : <Text style={styles.noDataText}>{"You currently don't have any requests to play."}</Text>
+          }
         </View>
-        {
-          invitations.length
-            ? invitations.map((invite) => <Text>{invite.invitee}</Text>)
-            : <Text>{'You currently have not invited anyone.'}</Text>
-        }
       </View>
-      <View>
-        <Text>{'Requests'}</Text>
-        {
-          inboundGameRequests.length
-            ? inboundGameRequests.map((request) => <Text>{request.invitor}</Text>)
-            : <Text>{"You currently don't have any requests to play."}</Text>
-        }
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{'My Requests'}</Text>
+        <View style={styles.sectionContent}>
+          {
+            myRequests.length
+              ? myRequests.map((request) => <Text>{request.invitee}</Text>)
+              : <Text style={styles.noDataText}>{'You currently have not invited anyone.'}</Text>
+          }
+        </View>
       </View>
     </View>
   );
@@ -81,7 +88,30 @@ export default function MyInvitations() {
 
 const styles = StyleSheet.create({
   wrapper: {
+    marginTop: 16,
     paddingHorizontal: 16
+  },
+  section: {
+    marginBottom: 16
+  },
+  sectionContent: {
+    paddingLeft: 8
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600'
+  },
+  noDataText: {
+    fontSize: 14,
+    fontWeight: '100',
+    color: 'black'
+  },
+  invitationItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '70%',
+    marginVertical: 4
   },
   inviteButtonStyles: {
     width: 80,
