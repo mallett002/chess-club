@@ -52,18 +52,18 @@ export default function GamesScreen({ navigation }) {
         loading={currentGamesLoading} 
         error={currentGamesError}
       /> */}
-      <Button
+      {/* <Button
         onPress={async () => {
-          // await createGameMutation({
-          //   variables: {
-          //     playerOne: "some-guid-1",
-          //     playerTwo: "some-guid-2"
-          //   }
-          // });
+          await createGameMutation({
+            variables: {
+              playerOne: "some-guid-1",
+              playerTwo: "some-guid-2"
+            }
+          });
         }}
         title='Create Game (for now)'
         color='#841584'
-      />
+      /> */}
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import React from 'react';
+import React, { useState } from 'react';
 import { TextInput, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
@@ -23,6 +23,7 @@ const INVITATIONS_QUERY = gql`
 
 export default function MyInvitations() {
   const { data, error, loading, refetch } = useQuery(INVITATIONS_QUERY);
+  const [showMakeRequest, setShowMakeRequest] = useState(false);
 
   if (error || !loading && !data || !loading && !data.getInvitations) {
     return (
@@ -75,15 +76,31 @@ export default function MyInvitations() {
         </View>
       </View>
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{'My Requests'}</Text>
-        {/* Todo: working on adding an "Add" icon */}
-        <Feather name={'add'} size={12} color={'red'} />
+        <View style={styles.requestsHeader}>
+          <Text style={styles.sectionTitle}>{'My Sent Invitations'}</Text>
+          <TouchableOpacity style={{backgroundColor: 'green'}} onPress={() => {
+            console.log('pooooooop');
+            setShowMakeRequest(!showMakeRequest)}}>
+            <Feather
+              name={'plus-circle'}
+              size={28}
+              color={colors.LIGHT_CELL}
+            />
+          </TouchableOpacity>
+        </View>
+        {
+          showMakeRequest
+            ? <View>
+              <Text>{'Send Invitation to Play'}</Text>
+            </View>
+            : null
+        }
         <View style={styles.sectionContent}>
           {
             fakeRequests.length
               ? fakeRequests.map((request, i) => <View key={i} style={styles.invitationItem}>
                 <Text>{request.invitee}</Text>
-                <Text style={{color: colors.LIGHT_CELL, fontSize: 12}}>{'Pending'}</Text>
+                <Text style={{ color: colors.LIGHT_CELL, fontSize: 12 }}>{'Pending'}</Text>
               </View>)
               : <Text style={styles.noDataText}>{'You currently have not invited anyone.'}</Text>
           }
@@ -103,6 +120,12 @@ const styles = StyleSheet.create({
   },
   sectionContent: {
     paddingLeft: 8
+  },
+  requestsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: 8
   },
   sectionTitle: {
     fontSize: 18,
