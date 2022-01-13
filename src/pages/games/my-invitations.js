@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 import { TextInput, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
+import InvitationForm from '../../components/invitation-form';
 import { colors } from '../../constants/colors';
 
 const INVITATIONS_QUERY = gql`
@@ -47,14 +49,15 @@ export default function MyInvitations() {
     );
   }
 
-  // invitations: what I send out
-  // inboundGameRequest: what come in
   const { getInvitations: { invitations: myRequests, inboundGameRequests } } = data;
   const fakeInvitations = [{ invitor: 'jeffreyDSerb' }, { invitor: 'bmallYourPal' }, { invitor: 'dickTracy' }];
   const fakeRequests = [{ invitee: 'tStark' }, { invitee: 'snoozYaLoose' }, { invitee: 'tomHafferty' }];
 
   return (
-    <View style={styles.wrapper}>
+    <KeyboardAwareScrollView
+      scrollEnabled={false}
+      style={styles.wrapper}
+    >
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{'My Invitations'}</Text>
         <View style={styles.sectionContent}>
@@ -78,21 +81,20 @@ export default function MyInvitations() {
       <View style={styles.section}>
         <View style={styles.requestsHeader}>
           <Text style={styles.sectionTitle}>{'My Sent Invitations'}</Text>
-          <TouchableOpacity style={{backgroundColor: 'green'}} onPress={() => {
-            console.log('pooooooop');
-            setShowMakeRequest(!showMakeRequest)}}>
+          <TouchableOpacity
+            onPress={() => setShowMakeRequest(true)}
+            disabled={showMakeRequest}
+          >
             <Feather
               name={'plus-circle'}
               size={28}
-              color={colors.LIGHT_CELL}
+              color={showMakeRequest ? 'gray' : 'green'}
             />
           </TouchableOpacity>
         </View>
         {
           showMakeRequest
-            ? <View>
-              <Text>{'Send Invitation to Play'}</Text>
-            </View>
+            ? <InvitationForm setShowMakeRequest={setShowMakeRequest} />
             : null
         }
         <View style={styles.sectionContent}>
@@ -106,7 +108,7 @@ export default function MyInvitations() {
           }
         </View>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 
