@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, Dimensions, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -36,7 +36,26 @@ const CREATE_INVITATION_MUTATION = gql`
 `;
 
 function InvitationForm({ setShowMakeRequest }) {
-  const [mutate, { data, loading, error }] = useMutation(CREATE_INVITATION_MUTATION);
+  const [mutate, { data, loading, error }] = useMutation(CREATE_INVITATION_MUTATION, {
+    onError: (err) => {
+      if (/player with username [^\s\\]+ not found/.test(err)) {
+        setInviteError('Invitation failed. Make sure username is correct.');
+      } else if (/player attempting to invite self/.test(err)) {
+        setInviteError("You can't invite yourself.");
+      } else if (/Existing invitation with [^\s\\]+/.test(err)) {
+        setInviteError("You have an existing invitation with that player.");
+      } else {
+        setInviteError('Something went wrong. Please try again.');
+      }
+    },
+    onSuccess: () => {
+      // this doesn't seem to get called.. Trying to await the mutate below
+      console.log('success!');
+      setInviteError(null);
+      setShowMakeRequest(false);
+    }
+  });
+  const [invitationError, setInviteError] = useState(null);
 
   if (loading) {
     return (
@@ -50,7 +69,7 @@ function InvitationForm({ setShowMakeRequest }) {
   }
 
   return (
-    <View style={{marginBottom: 20}}>
+    <View style={{ marginBottom: 20 }}>
       <Text style={{ marginVertical: 20 }}>{'Send Invitation to Play'}</Text>
       <Formik
         initialValues={{
@@ -60,8 +79,6 @@ function InvitationForm({ setShowMakeRequest }) {
         validateOnBlur
         validationSchema={createInvitationSchema}
         onSubmit={({ username }, actions) => {
-          // Todo: Try catch this and show errors on screen
-          // Ex: "Invitation failed. Make sure username is correct"
           mutate({
             variables: {
               inviteeUsername: username
@@ -69,7 +86,6 @@ function InvitationForm({ setShowMakeRequest }) {
           });
 
           actions.setSubmitting(false);
-          setShowMakeRequest(false);
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
@@ -100,7 +116,7 @@ function InvitationForm({ setShowMakeRequest }) {
                 }}
                 onPress={() => setShowMakeRequest(false)}
               >
-                <Text style={{color: '#FFF'}}>{'Cancel'}</Text>
+                <Text style={{ color: '#FFF' }}>{'Cancel'}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 disabled={isSubmitting || !Object.keys(touched).length || Object.keys(errors).length}
@@ -111,10 +127,13 @@ function InvitationForm({ setShowMakeRequest }) {
                 {
                   isSubmitting
                     ? <ActivityIndicator color={'white'} />
-                    : <Text style={styles.buttonText}>{'Create Account'}</Text>
+                    : <Text style={styles.buttonText}>{'Send Invitation'}</Text>
                 }
               </TouchableOpacity>
             </View>
+            {
+              invitationError ? <Text style={styles.inputError}>{invitationError}</Text> : null
+            }
           </View>
         )}
       </Formik>

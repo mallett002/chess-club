@@ -6,7 +6,7 @@ import { removeTokenFromStorage } from '../../utils/token-utils';
 
 function ProfileScreen() {
   const [loading, setLoading] = useState(false);
-  const { setAccessToken, setUsername, setPlayerId } = useContext(AppContext);
+  const { setAccessToken, setUsername, setPlayerId, username } = useContext(AppContext);
 
   const logUserOut = async () => {
     setLoading(true);
@@ -30,7 +30,7 @@ function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Text>{'Profile!'}</Text>
+      <Text>{`Signed in as ${username}`}</Text>
       <Text
         onPress={logUserOut}
         style={styles.logoutText}

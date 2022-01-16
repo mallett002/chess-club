@@ -50,8 +50,8 @@ export default function MyInvitations() {
   }
 
   const { getInvitations: { invitations: myRequests, inboundGameRequests } } = data;
-  const fakeInvitations = [{ invitor: 'jeffreyDSerb' }, { invitor: 'bmallYourPal' }, { invitor: 'dickTracy' }];
-  const fakeRequests = [{ invitee: 'tStark' }, { invitee: 'snoozYaLoose' }, { invitee: 'tomHafferty' }];
+  // const fakeInvitations = [{ invitor: 'jeffreyDSerb' }, { invitor: 'bmallYourPal' }, { invitor: 'dickTracy' }];
+  // const fakeRequests = [{ invitee: 'tStark' }, { invitee: 'snoozYaLoose' }, { invitee: 'tomHafferty' }];
 
   return (
     <KeyboardAwareScrollView
@@ -62,8 +62,8 @@ export default function MyInvitations() {
         <Text style={styles.sectionTitle}>{'My Invitations'}</Text>
         <View style={styles.sectionContent}>
           {
-            fakeInvitations.length
-              ? fakeInvitations.map((request, i) => <View key={i} style={styles.invitationItem}>
+            inboundGameRequests.length
+              ? inboundGameRequests.map((request, i) => <View key={i} style={styles.invitationItem}>
                 <Text>{request.invitor}</Text>
                 <TouchableOpacity style={{
                   backgroundColor: colors.DESTINATION_CELL,
@@ -72,6 +72,14 @@ export default function MyInvitations() {
                   paddingHorizontal: 8
                 }}>
                   <Text style={{ color: '#FFF', paddingBottom: 2 }}>{'Accept'}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{
+                  backgroundColor: 'red',
+                  borderRadius: 2,
+                  paddingVertical: 2,
+                  paddingHorizontal: 8
+                }}>
+                  <Text style={{ color: '#FFF', paddingBottom: 2 }}>{'Decline'}</Text>
                 </TouchableOpacity>
               </View>)
               : <Text style={styles.noDataText}>{"You currently don't have any requests to play."}</Text>
@@ -99,8 +107,8 @@ export default function MyInvitations() {
         }
         <View style={styles.sectionContent}>
           {
-            fakeRequests.length
-              ? fakeRequests.map((request, i) => <View key={i} style={styles.invitationItem}>
+            myRequests.length
+              ? myRequests.map((request, i) => <View key={i} style={styles.invitationItem}>
                 <Text>{request.invitee}</Text>
                 <Text style={{ color: colors.LIGHT_CELL, fontSize: 12 }}>{'Pending'}</Text>
               </View>)
